@@ -1,0 +1,39 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.CompileOnBackground=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+Compilator.LogEncoding=0
+DefaultDir=C:\ittve-ESP32-CAM\08-potokovaya-peredacha-video-cherez-brauzer
+DefaultCP=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+HTServer=localhost
+Extensions=*.*
+[Project tree]
+08-potokovaya-peredacha-video-cherez-brauzer
+	+08-potokovaya-peredacha-video-cherez-brauzer
+		-BP1
+			BP1\logSetup.bp1
+			BP1\StreamESP32CAM.bp1
+		+StreamESP32CAM
+			StreamESP32CAM\OV2640.cpp
+			StreamESP32CAM\OV2640.h
+			StreamESP32CAM\StreamESP32CAM.ino
+		08-potokovaya-peredacha-video-cherez-brauzer.md
+		08-potokovaya-peredacha-video-cherez-brauzer.ppr
+		Micro-RTSP-master.zip
+		Scheme-in-Fritzing.png
+[Open project files]
+0=StreamESP32CAM\StreamESP32CAM.ino
+[Selected Project Files]
+Main=
+Selected=StreamESP32CAM\StreamESP32CAM.ino
+[StreamESP32CAM\StreamESP32CAM.ino]
+TopLine=142
+Caret=1,142
