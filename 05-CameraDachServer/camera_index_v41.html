@@ -493,9 +493,27 @@ input.toggle-section-button:checked+section.toggle-section {
           <option value="6">Сепия</option>
         </select>
       </div>
-
+      
+      <!-- 
+      <div class="input-group" id="awb-group">
+        <label for="awb">Баланс белого цвета (AWB) </label>
+        <div class="switch">
+           <input id="awb" type="checkbox" class="default-action" checked="checked">
+           <label class="slider" for="awb"></label>
+        </div>
+      </div>
+                        
+      <div class="input-group" id="awb_gain-group">
+        <label for="awb_gain">Корректировка AWB по освещению</label>
+        <div class="switch">
+          <input id="awb_gain" type="checkbox" class="default-action" checked="checked">
+          <label class="slider" for="awb_gain"></label>
+        </div>
+      </div>
+      -->
+      
       <div class="input-group" id="wb_mode-group">
-        <label for="wb_mode">Коррекция белого света</label>
+        <label for="wb_mode">Изменение баланса</label>
         <select id="wb_mode" class="default-action">
           <option value="0" selected="selected">Автоматически</option>
           <option value="1">Солнечно</option>
@@ -567,7 +585,7 @@ input.toggle-section-button:checked+section.toggle-section {
       </div>
       
       <div class="input-group" id="raw_gma-group">
-        <label for="raw_gma">Коррекция передачи пикселей</label>
+        <label for="raw_gma">«Cырое» изображение</label>
         <div class="switch">
           <input id="raw_gma" type="checkbox" class="default-action" checked="checked">
           <label class="slider" for="raw_gma"></label>
@@ -834,6 +852,7 @@ document.addEventListener('DOMContentLoaded', function (event)
     // Сворачиваем/раскрываем:
     // "aec"           - AEC SENSOR - контроль экспозиции;
     // "agc"           - AGC - освещенность;
+    // "awb_gain"      - Корректировка AWB по освещению;
     else if (!updateRemote)
     {
       if (el.id === "aec")
@@ -853,6 +872,10 @@ document.addEventListener('DOMContentLoaded', function (event)
           show(agcGain)
         }
       }
+      //else if (el.id === "awb_gain")
+      //{
+      //  value ? show(wb) : hide(wb)
+      //} 
     }
   }
   // ---
@@ -1023,6 +1046,16 @@ document.addEventListener('DOMContentLoaded', function (event)
     updateConfig(aec)
     aec.checked ? hide(exposure) : show(exposure)
   }
+
+  // AWB
+  /*
+  const awb = document.getElementById('awb_gain')
+  const wb = document.getElementById('wb_mode-group')
+  awb.onchange = () => {
+    updateConfig(awb)
+    awb.checked ? show(wb) : hide(wb)
+  }
+  */
 
   // Detection and framesize
   const framesize = document.getElementById('framesize')

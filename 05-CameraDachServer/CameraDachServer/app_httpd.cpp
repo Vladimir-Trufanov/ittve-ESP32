@@ -499,16 +499,6 @@ static esp_err_t cmd_handler(httpd_req_t *req)
   {
     res = s->set_colorbar(s, val);
   } 
-  // Устанавливаем белый баланс (AWB)
-  else if (!strcmp(variable, "awb")) 
-  {
-    res = s->set_whitebal(s, val);
-  } 
-  // Включаем/отключаем режимы белого баланса 
-  else if (!strcmp(variable, "awb_gain")) 
-  {
-    res = s->set_awb_gain(s, val);
-  } 
   // Устанавливаем режим белого баланса
   else if (!strcmp(variable, "wb_mode")) 
   {
@@ -542,10 +532,6 @@ static esp_err_t cmd_handler(httpd_req_t *req)
   else if (!strcmp(variable, "aec2")) 
   {
     res = s->set_aec2(s, val);
-  } 
-  else if (!strcmp(variable, "dcw")) 
-  {
-    res = s->set_dcw(s, val);
   } 
   else if (!strcmp(variable, "bpc")) 
   {
@@ -631,8 +617,6 @@ static esp_err_t status_handler(httpd_req_t *req)
   p += sprintf(p, "\"sharpness\":%d,", s->status.sharpness);
   p += sprintf(p, "\"special_effect\":%u,", s->status.special_effect);
   p += sprintf(p, "\"wb_mode\":%u,", s->status.wb_mode);
-  p += sprintf(p, "\"awb\":%u,", s->status.awb);
-  p += sprintf(p, "\"awb_gain\":%u,", s->status.awb_gain);
   p += sprintf(p, "\"aec\":%u,", s->status.aec);
   p += sprintf(p, "\"aec2\":%u,", s->status.aec2);
   p += sprintf(p, "\"ae_level\":%d,", s->status.ae_level);
@@ -646,7 +630,6 @@ static esp_err_t status_handler(httpd_req_t *req)
   p += sprintf(p, "\"lenc\":%u,", s->status.lenc);
   p += sprintf(p, "\"hmirror\":%u,", s->status.hmirror);
   p += sprintf(p, "\"vflip\":%u,", s->status.vflip);
-  p += sprintf(p, "\"dcw\":%u,", s->status.dcw);
   p += sprintf(p, "\"colorbar\":%u", s->status.colorbar);
   *p++ = '}';
   *p++ = 0;
