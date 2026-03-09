@@ -134,6 +134,32 @@ void setup()
   Serial.println("");
   Serial.println("WiFi подключен");
 
+  Serial.print("Current ESP32 IP: ");      Serial.println(WiFi.localIP());
+  Serial.print("Gateway1 (router) IP: ");  Serial.println(WiFi.gatewayIP());
+  Serial.print("Subnet Mask: " );          Serial.println(WiFi.subnetMask());
+  Serial.print("Primary DNS: ");           Serial.println(WiFi.dnsIP(0));
+  Serial.print("Secondary DNS: ");         Serial.println(WiFi.dnsIP(1));
+
+  // Static IP configuration
+  IPAddress staticIP(192, 168, 0, 200); // ESP32 static IP
+  IPAddress gateway(192, 168, 0, 1);    // IP Address of your network gateway (router)
+  IPAddress subnet(255, 255, 255, 0);   // Subnet mask
+  IPAddress primaryDNS(192, 168, 0, 1); // Primary DNS (optional)
+  IPAddress secondaryDNS(0, 0, 0, 0);   // Secondary DNS (optional)
+
+  // Configuring static IP
+  if(!WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS)) 
+  {
+    Serial.println("Failed to configure Static IP");
+  } 
+  else 
+  {
+    Serial.println("Static IP configured!");
+  }
+  
+  Serial.print("ESP32 IP Address: ");
+  Serial.println(WiFi.localIP());  // Print the ESP32 IP address to Serial Monitor
+
   startCameraServer();
 
   Serial.print("Камера готова! \n'http://");
