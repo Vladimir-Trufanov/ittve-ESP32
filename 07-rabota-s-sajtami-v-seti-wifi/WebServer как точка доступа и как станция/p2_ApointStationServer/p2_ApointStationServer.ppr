@@ -1,0 +1,33 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.CompileOnBackground=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+Compilator.LogEncoding=0
+DefaultDir=C:\ittve-ESP32\07-rabota-s-sajtami-v-seti-wifi\WebServer как точка доступа и как станция\p2_ApointStationServer
+DefaultCP=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+Extensions=*.*
+[Project tree]
+p2_ApointStationServer
+	+p2_ApointStationServer
+		p2_ApointStationServer.ino
+		p2_ApointStationServer.ppr
+[Open project files]
+0=p2_ApointStationServer.ino
+1=index.h
+[Selected Project Files]
+Main=
+Selected=p2_ApointStationServer.ino
+[p2_ApointStationServer.ino]
+TopLine=3
+Caret=33,22
+[index.h]
+TopLine=65
+Caret=7,91

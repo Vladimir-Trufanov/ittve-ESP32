@@ -23,6 +23,11 @@
 const char* ssid     = "TP-Link_B394";
 const char* password = "18009217";
 
+ 
+const char *soft_ap_ssid = "SoftAPand";  // p1_SoftAPandStation
+const char *soft_ap_password = "testpassword";
+
+
 void startCameraServer();
 void setupLedFlash();
 
@@ -96,6 +101,28 @@ void setup()
   {
     s->set_framesize(s, FRAMESIZE_QVGA);
   }
+
+  
+  WiFi.mode(WIFI_MODE_APSTA);
+ 
+  WiFi.softAP(soft_ap_ssid, soft_ap_password);
+  //WiFi.begin(wifi_network_ssid, wifi_network_password);
+ 
+ 
+  //while (WiFi.status() != WL_CONNECTED) {
+  //  delay(500);
+  //  Serial.println("Connecting to WiFi..");
+  //}
+ 
+  /*
+  Serial.print("ESP32 IP as soft AP: ");
+  Serial.println(WiFi.softAPIP());
+ 
+  Serial.print("ESP32 IP on the WiFi network: ");
+  Serial.println(WiFi.localIP());
+  */
+
+  
   // Подключаемся в WiFi
   WiFi.begin(ssid, password);
   WiFi.setSleep(false);
@@ -107,6 +134,13 @@ void setup()
   }
   Serial.println("");
   Serial.println("WiFi подключен");
+
+  Serial.print("ESP32 IP as soft AP: ");
+  Serial.println(WiFi.softAPIP());
+ 
+  Serial.print("ESP32 IP on the WiFi network: ");
+  Serial.println(WiFi.localIP());
+ 
 
   // Если статический адрес для TP-Link_B394
   /*

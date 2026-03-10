@@ -43,14 +43,14 @@ Selected=CaptivePortal.h
 TopLine=803
 Caret=6,842
 [html\camera_index_v4.html]
-TopLine=762
+TopLine=1000
 Caret=1,1038
 [camera_index.h]
 TopLine=99
 Caret=39,110
 [CameraDachServer.ino]
 TopLine=98
-Caret=20,137
+Caret=1,137
 [CaptivePortal.h]
 TopLine=29
-Caret=3,41
+Caret=2,41
