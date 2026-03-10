@@ -1,3 +1,8 @@
+/*
+2026-03-10 делалось на <ArduinoJson.h> v5.13.5
+[ESP32 Captive Portal to Configure Static and DHCP IP Settings](https://www.instructables.com/ESP32-Captive-Portal-to-Configure-Static-and-DHCP-/)
+[ESP32-Captive-Portal](https://github.com/ncdcommunity/ESP32-Captive/tree/master)
+*/
 #include <ArduinoJson.h>
 #include <WiFi.h>
 #include "FS.h"
@@ -12,13 +17,6 @@
 
 //************** Auxillary functions******************//
 WebServer server(80);
-
-/*
-StaticJsonBuffer<234> jsonBuffer; — это объявление объекта класса StaticJsonBuffer из библиотеки ArduinoJson. Параметр <234> указывает на размер буфера — 234 байта. 
-toolify.ai
-arduinojson.org
-Класс StaticJsonBuffer используется для хранения дерева объектов JSON в предварительно выделенной памяти. Перед использованием функций библиотеки необходимо создать объект StaticJsonBuffer, а затем использовать его для создания массивов и объектов или анализа строки JSON. 
-*/
 StaticJsonBuffer<234> jsonBuffer;
 
 //**********softAPconfig Timer*************//
@@ -26,14 +24,8 @@ unsigned long APTimer = 0;
 unsigned long APInterval = 120000;
 
 //*********SSID and Pass for AP**************//
-//const char* ssidAPConfig = "adminesp32";
-//const char* passAPConfig = "adminesp32";
-//const char* ssid     = "TP-Link_B394";
-//const char* password = "18009217";
-
-const char* ssidAPConfig = "TP-Link_B394";
-const char* passAPConfig = "18009217";
-
+const char* ssidAPConfig = "adminesp32";
+const char* passAPConfig = "adminesp32";
 
 //**********check for connection*************//
 bool isConnected = true;
@@ -67,10 +59,8 @@ const char HTTP_PAGE_GOHOME[] PROGMEM = "<H2><a href=\"/\">go home</a></H2><br>"
 
 char messageBuf[MESSAGE_MAX_LEN]; 
 
-void setup() 
-{
+void setup() {
   Serial.begin(115200);
-  delay(3000);  
   while(!Serial);
   WiFi.persistent(false);
   WiFi.disconnect(true);
@@ -80,54 +70,39 @@ void setup()
   delay(100);
   File file = SPIFFS.open("/ip_set.txt", "r");     
   Serial.println("- read from file:");
-  if(!file)
-  {
-    Serial.println("- failed to open file for reading");
-    return;
-  }
-  Serial.println("***");
-  while(file.available())
-  {
-    debugLogData += char(file.read());
-  } 
-  Serial.println(debugLogData);
-  Serial.println("***");
-  file.close();
-
-  if(debugLogData.length()>10)
-  {
-    /*
-    JsonObject& readRoot =jsonBuffer.parseObject(debugLogData);
-    Serial.println("=====================================");
-    Serial.println(debugLogData);
-    Serial.println("=====================================");
-    if(readRoot.containsKey("staticSet"))
-    {
-      Serial.println("Static IP Started ");
-      staticAPConfig(readRoot["staticIP"],readRoot["staticGate"],readRoot["staticSub"],readRoot["ssidStatic"],readRoot["staticPass"]);
+     if(!file){
+        Serial.println("- failed to open file for reading");
+        return;
     }
-    else if(readRoot.containsKey("dhcpSet"))
-    {
-      Serial.println("DHCP IP Started" );
-      dhcpAPConfig(readRoot["ssidDHCP"],readRoot["passDHCP"]);
-    }
-    else
-    {
+    while(file.available()){
+        debugLogData += char(file.read());
+    } 
+    file.close();
+    if(debugLogData.length()>10){
+       JsonObject& readRoot =jsonBuffer.parseObject(debugLogData);
+          Serial.println("=====================================");
+          Serial.println(debugLogData);
+          Serial.println("=====================================");
+          if(readRoot.containsKey("staticSet")){
+             Serial.println("Static IP Started ");
+             staticAPConfig(readRoot["staticIP"],readRoot["staticGate"],readRoot["staticSub"],readRoot["ssidStatic"],readRoot["staticPass"]);
+             }
+           else if(readRoot.containsKey("dhcpSet")){
+                   Serial.println("DHCP IP Started" );
+                   dhcpAPConfig(readRoot["ssidDHCP"],readRoot["passDHCP"]);
+                   }
+           else{
+               handleClientAP();
+               }
+     }else{ 
       handleClientAP();
-    }
-    */
-  }
-  else
-  { 
-    handleClientAP();
-  } 
-  //reconnectWiFi();
-  //Serial.println(WiFi.localIP());
+   } 
+  reconnectWiFi();
 }
 
-void loop() 
-{
-  //Serial.println(WiFi.localIP());
+
+void loop() {
+  Serial.println(WiFi.localIP());
   delay(500);
 }
 
@@ -238,74 +213,26 @@ void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) 
 
 //****************HANDLE CLIENT 192.168.1.77*********************//
 
-void handleClientAP()
-{
-  Serial.println("handleClientAP();");
-  
-  /*
-  // Connect to Wi-Fi network with SSID and password
-  Serial.print("Connecting to ");
-  Serial.println(ssidAPConfig);
-  WiFi.begin(ssidAPConfig,passAPConfig);
-  while (WiFi.status() != WL_CONNECTED) 
-  {
-    delay(500);
-    Serial.print(".");
+void handleClientAP(){
+   //*********Static IP Config**************//
+   WiFi.mode(WIFI_AP);
+   Serial.println(WiFi.softAP(ssidAPConfig,passAPConfig) ? "soft-AP setup": "Failed to connect");
+   delay(100);
+   Serial.println(WiFi.softAPConfig( IPAddress(192,168,1,77),IPAddress(192,168,1,254), IPAddress(255,255,255,0))? "Configuring Soft AP" : "Error in Configuration");      
+   Serial.println(WiFi.softAPIP());
+   server.begin();
+   server.on("/", handleRoot); 
+   server.on("/dhcp", handleDHCP);
+   server.on("/static", handleStatic);
+   server.onNotFound(handleNotFound);  
+   
+   APTimer = millis();
+    
+   while(isConnected && millis()-APTimer<= APInterval) {
+        server.handleClient();}  
+    esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
+    esp_deep_sleep_start();    
   }
-  // Print local IP address and start web server
-  Serial.println("");
-  Serial.println("WiFi connected.");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-  server.begin();
-  Serial.println("server.begin();");
-
-  server.on("/", handleRoot); 
-  server.on("/dhcp", handleDHCP);
-  server.on("/static", handleStatic);
-  server.onNotFound(handleNotFound);  
-   
-  APTimer = millis();
-  while(isConnected && millis()-APTimer<= APInterval) 
-  {
-    server.handleClient();
-  }  
-  Serial.println("server.handleClient();");
-  */
-  
-  WiFi.mode(WIFI_AP);
-  Serial.println(WiFi.softAP(ssidAPConfig,passAPConfig) ? "soft-AP setup": "Failed to connect");
-  delay(100);
-
-  // Static IP configuration
-  /*
-  IPAddress staticIP(192, 168, 0, 200); // ESP32 static IP
-  IPAddress gateway(192, 168, 0, 1);    // IP Address of your network gateway (router)
-  IPAddress subnet(255, 255, 255, 0);   // Subnet mask
-  IPAddress primaryDNS(192, 168, 0, 1); // Primary DNS (optional)
-  IPAddress secondaryDNS(0, 0, 0, 0);   // Secondary DNS (optional)
-  if(!WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS)) {
-
-  */
-  //Serial.println(WiFi.softAPConfig( IPAddress(192,168,1,77),IPAddress(192,168,1,254), IPAddress(255,255,255,0))? "Configuring Soft AP" : "Error in Configuration");      
-  Serial.println(WiFi.softAPConfig( IPAddress(192,168,0,200), IPAddress(192,168,0,1), IPAddress(255,255,255,0))? "Configuring Soft AP" : "Error in Configuration");      
-  Serial.println(WiFi.softAPIP());
-  server.begin();
-  server.on("/", handleRoot); 
-  server.on("/dhcp", handleDHCP);
-  server.on("/static", handleStatic);
-  server.onNotFound(handleNotFound);  
-   
-  APTimer = millis();
-  while(isConnected && millis()-APTimer<= APInterval) 
-  {
-    server.handleClient();
-  } 
-  /* 
-  esp_sleep_enable_timer_wakeup(TIME_TO_SLEEP * uS_TO_S_FACTOR);
-  esp_deep_sleep_start();
-  */    
-}
   
 //***************************STATIC Helper method**************************//
 
