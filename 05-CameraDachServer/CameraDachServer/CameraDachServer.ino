@@ -13,6 +13,7 @@
 
 #include "esp_camera.h"
 #include <WiFi.h>
+#include "CaptivePortal.h"
 
 // Выбираем модель камеры
 #include "board_config.h"
@@ -36,6 +37,8 @@ void setup()
   
   // Показываем контрольные определения
   CtrlDefine();
+
+  //PortalSetup(); 
 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -97,7 +100,8 @@ void setup()
   WiFi.begin(ssid, password);
   WiFi.setSleep(false);
   Serial.print("Подключение к WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED) 
+  {
     delay(500);
     Serial.print(".");
   }
@@ -130,18 +134,24 @@ void setup()
   Serial.println(WiFi.localIP());  // Print the ESP32 IP address to Serial Monitor
   */
   
+  
   startCameraServer();
 
   Serial.print("Камера готова! \n'http://");
   Serial.print(WiFi.localIP());
   Serial.println("' для подключения к потоку.");
-}
+ }
 
 void loop() 
 {
   // В фоновом цикле ничего не делается. 
   // Трансляция потока выполняется веб-сервером в другой задаче
-  delay(59000);
+  // delay(59000);
+
+  server.handleClient();
+  delay(5);  // give CPU some idle time
+
+
 }
 
 // *************************************************** CameraDachServer.ino ***
