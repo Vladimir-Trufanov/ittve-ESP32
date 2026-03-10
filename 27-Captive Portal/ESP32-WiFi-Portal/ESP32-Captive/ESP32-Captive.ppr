@@ -1,0 +1,39 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.CompileOnBackground=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+Compilator.LogEncoding=0
+DefaultDir=C:\ittve-ESP32\25-Статический IP\ESP32-WiFi-Portal\ESP32-Captive
+DefaultCP=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+Extensions=*.*
+[Project tree]
+ESP32-Captive
+	+ESP32-Captive
+		-data
+			data\ip_set.txt
+			data\page_dhcp.html
+			data\page_static.html
+			data\Select_Settings.html
+			data\WiFi.html
+		ESP32-Captive.ino
+		ESP32-Captive.md
+		FZP1BLDJSCG1ZDD.LARGE.jpg
+		webpage1.png
+		webpage2.png
+		webpage2_2.png
+[Open project files]
+0=ESP32-Captive.ino
+[Selected Project Files]
+Main=
+Selected=ESP32-Captive.ino
+[ESP32-Captive.ino]
+TopLine=277
+Caret=1,279

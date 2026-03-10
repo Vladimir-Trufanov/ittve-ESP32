@@ -1,6 +1,6 @@
 /** Arduino, ESP32, C/C++ **************************** CameraDachServer.ino ***
  * 
- * v4.0.4, 08.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.5, 10.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
  * Preferences:       https://espressif.github.io/arduino-esp32/package_esp32_dev_index.json
@@ -57,8 +57,7 @@ void setup()
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
-  config.pixel_format = PIXFORMAT_JPEG;       // для потока
-  // config.pixel_format = PIXFORMAT_RGB565;  // для распознавания лиц
+  config.pixel_format = PIXFORMAT_JPEG;     
 
   // По присутствию PSRAM, для более высокого качества JPEG определяемся с 
   // разрешением и выделением буфера кадров.
@@ -68,38 +67,18 @@ void setup()
   config.fb_location = CAMERA_FB_IN_PSRAM;
   config.jpeg_quality = 12;
   config.fb_count = 1;
-
-  if (config.pixel_format == PIXFORMAT_JPEG) 
+  if (psramFound()) 
   {
-    if (psramFound()) 
-    {
-      config.jpeg_quality = 10;
-      config.fb_count = 2;
-      config.grab_mode = CAMERA_GRAB_LATEST;
-    } 
-    else 
-    {
-      // Ограничиваем размер кадра, если PSRAM недоступна
-      config.frame_size = FRAMESIZE_SVGA;
-      config.fb_location = CAMERA_FB_IN_DRAM;
-    }
+    config.jpeg_quality = 10;
+    config.fb_count = 2;
+    config.grab_mode = CAMERA_GRAB_LATEST;
   } 
   else 
   {
-    // Определяем лучший вариант для обнаружения/распознавания лиц
-    config.frame_size = FRAMESIZE_240X240;
-    #if CONFIG_IDF_TARGET_ESP32S3
-      config.fb_count = 2;
-    #endif
+    // Ограничиваем размер кадра, если PSRAM недоступна
+    config.frame_size = FRAMESIZE_SVGA;
+    config.fb_location = CAMERA_FB_IN_DRAM;
   }
-
-  /*
-  #if defined(CAMERA_MODEL_ESP_EYE)
-    pinMode(13, INPUT_PULLUP);
-    pinMode(14, INPUT_PULLUP);
-  #endif
-  */
-
   // Инициализируем камеру
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) 
@@ -114,15 +93,6 @@ void setup()
   {
     s->set_framesize(s, FRAMESIZE_QVGA);
   }
-  /*
-  #if defined(CAMERA_MODEL_M5STACK_WIDE) || defined(CAMERA_MODEL_M5STACK_ESP32CAM)
-    s->set_vflip(s, 1);
-    s->set_hmirror(s, 1);
-  #endif
-  #if defined(CAMERA_MODEL_ESP32S3_EYE)
-    s->set_vflip(s, 1);
-  #endif
-  */
   // Подключаемся в WiFi
   WiFi.begin(ssid, password);
   WiFi.setSleep(false);
@@ -134,19 +104,19 @@ void setup()
   Serial.println("");
   Serial.println("WiFi подключен");
 
+  // Если статический адрес для TP-Link_B394
+  /*
   Serial.print("Current ESP32 IP: ");      Serial.println(WiFi.localIP());
   Serial.print("Gateway1 (router) IP: ");  Serial.println(WiFi.gatewayIP());
   Serial.print("Subnet Mask: " );          Serial.println(WiFi.subnetMask());
   Serial.print("Primary DNS: ");           Serial.println(WiFi.dnsIP(0));
   Serial.print("Secondary DNS: ");         Serial.println(WiFi.dnsIP(1));
-
   // Static IP configuration
   IPAddress staticIP(192, 168, 0, 200); // ESP32 static IP
   IPAddress gateway(192, 168, 0, 1);    // IP Address of your network gateway (router)
   IPAddress subnet(255, 255, 255, 0);   // Subnet mask
   IPAddress primaryDNS(192, 168, 0, 1); // Primary DNS (optional)
   IPAddress secondaryDNS(0, 0, 0, 0);   // Secondary DNS (optional)
-
   // Configuring static IP
   if(!WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS)) 
   {
@@ -156,10 +126,10 @@ void setup()
   {
     Serial.println("Static IP configured!");
   }
-  
   Serial.print("ESP32 IP Address: ");
   Serial.println(WiFi.localIP());  // Print the ESP32 IP address to Serial Monitor
-
+  */
+  
   startCameraServer();
 
   Serial.print("Камера готова! \n'http://");

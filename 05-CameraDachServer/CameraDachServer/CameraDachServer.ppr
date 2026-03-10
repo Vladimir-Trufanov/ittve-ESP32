@@ -18,10 +18,10 @@ Extensions=*.*
 [Project tree]
 CameraDachServer
 	+CameraDachServer
-		+html
+		-html
 			html\camera_index_v4.html
 			html\CAMERA_PARAMETERS.md
-			html\Short-ESP32-CAM.html
+			html\CameraDachParms.md
 		app_httpd.cpp
 		board_config.h
 		camera_index.h
@@ -32,15 +32,19 @@ CameraDachServer
 0=app_httpd.cpp
 1=html\camera_index_v4.html
 2=camera_index.h
+3=CameraDachServer.ino
 [Selected Project Files]
 Main=
-Selected=html\camera_index_v4.html
+Selected=CameraDachServer.ino
 [app_httpd.cpp]
 TopLine=491
 Caret=31,503
 [html\camera_index_v4.html]
-TopLine=503
+TopLine=998
 Caret=1,1038
 [camera_index.h]
 TopLine=99
 Caret=39,110
+[CameraDachServer.ino]
+TopLine=109
+Caret=3,132
