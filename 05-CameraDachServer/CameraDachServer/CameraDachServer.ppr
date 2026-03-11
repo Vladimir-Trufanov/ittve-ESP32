@@ -27,7 +27,6 @@ CameraDachServer
 		camera_index.h
 		CameraDachServer.ino
 		CameraDachServer.ppr
-		CaptivePortal.h
 		ci.yml
 		ctrl_define.h
 [Open project files]
@@ -35,22 +34,18 @@ CameraDachServer
 1=html\camera_index_v4.html
 2=camera_index.h
 3=CameraDachServer.ino
-4=CaptivePortal.h
 [Selected Project Files]
 Main=
-Selected=CaptivePortal.h
+Selected=camera_index.h
 [app_httpd.cpp]
-TopLine=803
-Caret=6,842
+TopLine=611
+Caret=48,629
 [html\camera_index_v4.html]
-TopLine=1000
-Caret=1,1038
+TopLine=1008
+Caret=1,1048
 [camera_index.h]
-TopLine=99
-Caret=39,110
+TopLine=530
+Caret=45,569
 [CameraDachServer.ino]
-TopLine=98
-Caret=1,137
-[CaptivePortal.h]
-TopLine=29
-Caret=2,41
+TopLine=114
+Caret=24,142

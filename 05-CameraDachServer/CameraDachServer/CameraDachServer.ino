@@ -1,6 +1,6 @@
 /** Arduino, ESP32, C/C++ **************************** CameraDachServer.ino ***
  * 
- * v4.0.5, 10.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.6, 11.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
  * Preferences:       https://espressif.github.io/arduino-esp32/package_esp32_dev_index.json
@@ -13,7 +13,6 @@
 
 #include "esp_camera.h"
 #include <WiFi.h>
-#include "CaptivePortal.h"
 
 // Выбираем модель камеры
 #include "board_config.h"
@@ -149,12 +148,7 @@ void loop()
 {
   // В фоновом цикле ничего не делается. 
   // Трансляция потока выполняется веб-сервером в другой задаче
-  // delay(59000);
-
-  server.handleClient();
-  delay(5);  // give CPU some idle time
-
-
+  delay(100);  // give CPU some idle time
 }
 
 // *************************************************** CameraDachServer.ino ***

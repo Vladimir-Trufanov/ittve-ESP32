@@ -346,7 +346,8 @@ input[type=range]::-webkit-slider-thumb {
                 cursor: pointer
             }
 
-.hidden {
+.hidden 
+{
   display: none
 }
 
@@ -385,10 +386,13 @@ input.toggle-section-button:checked+section.toggle-section {
 .toggle-section {
   display: none
 }
-.toggle-section-label{
+.toggle-section-label
+{
   display: none
 }
-
+/* 2026-03-11  "aec-group", "aec2-group", "aec_value-group" в CSS делаем невидимыми */
+#aec-group, #aec2-group,     #aec_value-group   {display:none}
+#agc-group, #agc_gain-group, #gainceiling-group {display:none}
 </style>
 </head>
 
@@ -504,7 +508,8 @@ input.toggle-section-button:checked+section.toggle-section {
           <option value="4">Домашний свет</option>
         </select>
       </div>
-      
+
+      <!-- "aec-group", "aec2-group", "aec_value-group" в CSS делаем невидимыми -->
       <div class="input-group" id="aec-group">
         <label for="aec">AEC SENSOR - контроль экспозиции</label>
         <div class="switch">
@@ -512,7 +517,6 @@ input.toggle-section-button:checked+section.toggle-section {
           <label class="slider" for="aec"></label>
         </div>
       </div>
-      
       <div class="input-group" id="aec2-group">
         <label for="aec2">AEC DSP</label>
         <div class="switch">
@@ -520,14 +524,13 @@ input.toggle-section-button:checked+section.toggle-section {
           <label class="slider" for="aec2"></label>
         </div>
       </div>
-       
       <div class="input-group" id="aec_value-group">
         <label for="aec_value">Экспозиция</label>
         <div class="range-min">0</div>
         <input type="range" id="aec_value" min="0" max="1200" value="204" class="default-action">
         <div class="range-max">1200</div>
       </div>
-      
+      <!-- "agc-group", "agc_gain-group", "gainceiling-group" в CSS делаем невидимыми -->
       <div class="input-group" id="agc-group">
         <label for="agc">Освещенность</label>
         <div class="switch">
@@ -535,14 +538,12 @@ input.toggle-section-button:checked+section.toggle-section {
           <label class="slider" for="agc"></label>
         </div>
       </div>
-      
       <div class="input-group hidden" id="agc_gain-group">
         <label for="agc_gain">Ручное усиление света</label>
         <div class="range-min">1x</div>
         <input type="range" id="agc_gain" min="0" max="30" value="5" class="default-action">
         <div class="range-max">31x</div>
       </div>
-      
       <div class="input-group" id="gainceiling-group">
         <label for="gainceiling">Потолок усиления</label>
         <div class="range-min">2x</div>
@@ -590,11 +591,11 @@ input.toggle-section-button:checked+section.toggle-section {
         </div>
       </div>
       <div class="input-group" id="vflip-group">
-                            <label for="vflip">Вертикальное отражение</label>
-                            <div class="switch">
-                                <input id="vflip" type="checkbox" class="default-action" checked="checked">
-                                <label class="slider" for="vflip"></label>
-                            </div>
+        <label for="vflip">Вертикальное отражение</label>
+        <div class="switch">
+           <input id="vflip" type="checkbox" class="default-action" checked="checked">
+           <label class="slider" for="vflip"></label>
+        </div>
       </div>
       <div class="input-group" id="colorbar-group">
         <label for="colorbar">Цветовые полосы</label>
@@ -830,7 +831,8 @@ document.addEventListener('DOMContentLoaded', function (event)
     if (updateRemote && initialValue !== value) 
     {
       updateConfig(el);
-    } 
+    }
+    /* 
     // Сворачиваем/раскрываем:
     // "aec"           - AEC SENSOR - контроль экспозиции;
     // "agc"           - AGC - освещенность;
@@ -854,6 +856,7 @@ document.addEventListener('DOMContentLoaded', function (event)
         }
       }
     }
+    */
   }
   // ---
   // Если поступила команда на обновление значений в памяти через страницу
@@ -918,15 +921,22 @@ document.addEventListener('DOMContentLoaded', function (event)
     // так как только-что значения выбрали)
     .forEach(el => 
     {
-      /*
-      console.log("el:");
-      console.log(el);
-      console.log("el.id:",el.id,"state[el.id] =",state[el.id]);
-      console.log(" ");
-      */
+      // Трассируем параметры по освещенности
+      if ((el.id=="agc")||(el.id=="agc_gain")||(el.id=="gainceiling"))
+      {
+        elConsole(el,el.id,state[el.id])
+      }
       updateValue(el, state[el.id], false);
     })
   })
+  // Вывести информацию по элементу
+  function elConsole(el,elid,stateelid)
+  {
+    //console.log("el:");
+    //console.log(el);
+    console.log("el.id:",elid,"state[el.id] =",stateelid);
+    //console.log(" ");
+  }  
   // Выбираем элементы главной страницы
   const view = document.getElementById('stream')
   const viewContainer = document.getElementById('stream-container')

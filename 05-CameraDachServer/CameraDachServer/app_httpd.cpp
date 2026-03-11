@@ -617,13 +617,18 @@ static esp_err_t status_handler(httpd_req_t *req)
   p += sprintf(p, "\"sharpness\":%d,", s->status.sharpness);
   p += sprintf(p, "\"special_effect\":%u,", s->status.special_effect);
   p += sprintf(p, "\"wb_mode\":%u,", s->status.wb_mode);
-  p += sprintf(p, "\"aec\":%u,", s->status.aec);
-  p += sprintf(p, "\"aec2\":%u,", s->status.aec2);
+  // 2026-03-11 Параметры экспозиции закрыли на странице,
+  // а здесь возвращаем на запрос наибольшие значения
+  p += sprintf(p, "\"aec\":%u,", 1);           // p += sprintf(p, "\"aec\":%u,", s->status.aec);
+  p += sprintf(p, "\"aec2\":%u,", 1);          // p += sprintf(p, "\"aec2\":%u,", s->status.aec2);
+  p += sprintf(p, "\"aec_value\":%u,", 1200);  // p += sprintf(p, "\"aec_value\":%u,", s->status.aec_value);
+  // 2026-03-11 Параметры освещенности закрыли на странице,
+  // а здесь возвращаем на запрос наибольшие значения
+  p += sprintf(p, "\"agc\":%u,", 1);           // p += sprintf(p, "\"agc\":%u,", s->status.agc);
+  p += sprintf(p, "\"agc_gain\":%u,", 31);     // p += sprintf(p, "\"agc_gain\":%u,", s->status.agc_gain);
+  p += sprintf(p, "\"gainceiling\":%u,", 6);   // p += sprintf(p, "\"gainceiling\":%u,", s->status.gainceiling);
+  // С остальными параметрами работаем
   p += sprintf(p, "\"ae_level\":%d,", s->status.ae_level);
-  p += sprintf(p, "\"aec_value\":%u,", s->status.aec_value);
-  p += sprintf(p, "\"agc\":%u,", s->status.agc);
-  p += sprintf(p, "\"agc_gain\":%u,", s->status.agc_gain);
-  p += sprintf(p, "\"gainceiling\":%u,", s->status.gainceiling);
   p += sprintf(p, "\"bpc\":%u,", s->status.bpc);
   p += sprintf(p, "\"wpc\":%u,", s->status.wpc);
   p += sprintf(p, "\"raw_gma\":%u,", s->status.raw_gma);
