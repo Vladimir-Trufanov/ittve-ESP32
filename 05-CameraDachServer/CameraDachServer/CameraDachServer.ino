@@ -22,11 +22,9 @@
 // "b277a4ee84e8"; "18009217"    ; "Ue18-647"   ; "x93k6kq6wf"; "X93K6KQ6WF";
 const char* ssid     = "TP-Link_B394";
 const char* password = "18009217";
-
- 
-const char *soft_ap_ssid = "SoftAPand";  // p1_SoftAPandStation
-const char *soft_ap_password = "testpassword";
-
+// "DachaSad" - камера для съёмок на природе
+const char* soft_ap_ssid     = "DachaSad";  
+const char* soft_ap_password = "DachaSad";
 
 void startCameraServer();
 void setupLedFlash();
@@ -42,9 +40,7 @@ void setup()
   
   // Показываем контрольные определения
   CtrlDefine();
-
-  //PortalSetup(); 
-
+  // Конфигурируем камеру 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
   config.ledc_timer = LEDC_TIMER_0;
@@ -66,10 +62,8 @@ void setup()
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG;     
-
   // По присутствию PSRAM, для более высокого качества JPEG определяемся с 
   // разрешением и выделением буфера кадров.
-
   config.frame_size = FRAMESIZE_UXGA;
   config.grab_mode  = CAMERA_GRAB_WHEN_EMPTY;
   config.fb_location = CAMERA_FB_IN_PSRAM;
@@ -101,29 +95,10 @@ void setup()
   {
     s->set_framesize(s, FRAMESIZE_QVGA);
   }
-
-  
+  // Назначаем работу контроллера, как станции WiFi и с собственной сетью
   WiFi.mode(WIFI_MODE_APSTA);
- 
   WiFi.softAP(soft_ap_ssid, soft_ap_password);
-  //WiFi.begin(wifi_network_ssid, wifi_network_password);
- 
- 
-  //while (WiFi.status() != WL_CONNECTED) {
-  //  delay(500);
-  //  Serial.println("Connecting to WiFi..");
-  //}
- 
-  /*
-  Serial.print("ESP32 IP as soft AP: ");
-  Serial.println(WiFi.softAPIP());
- 
-  Serial.print("ESP32 IP on the WiFi network: ");
-  Serial.println(WiFi.localIP());
-  */
-
-  
-  // Подключаемся в WiFi
+  // Подключаемся к WiFi
   WiFi.begin(ssid, password);
   WiFi.setSleep(false);
   Serial.print("Подключение к WiFi");
@@ -134,13 +109,8 @@ void setup()
   }
   Serial.println("");
   Serial.println("WiFi подключен");
-
-  Serial.print("ESP32 IP as soft AP: ");
-  Serial.println(WiFi.softAPIP());
- 
-  Serial.print("ESP32 IP on the WiFi network: ");
-  Serial.println(WiFi.localIP());
- 
+  Serial.print("IP собственной сети: ");  Serial.print(WiFi.softAPIP()); Serial.print("  "); Serial.println(soft_ap_ssid);
+  Serial.print("IP рабочей станции:  ");  Serial.print(WiFi.localIP());  Serial.print("  "); Serial.println(ssid);
 
   // Если статический адрес для TP-Link_B394
   /*
@@ -167,7 +137,6 @@ void setup()
   Serial.print("ESP32 IP Address: ");
   Serial.println(WiFi.localIP());  // Print the ESP32 IP address to Serial Monitor
   */
-  
   
   startCameraServer();
 
