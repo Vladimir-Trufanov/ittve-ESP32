@@ -606,8 +606,9 @@ static esp_err_t status_handler(httpd_req_t *req)
   p += print_reg(p, s, 0xd3, 0xFF);
   p += print_reg(p, s, 0x111, 0xFF);
   p += print_reg(p, s, 0x132, 0xFF);
-
-  p += sprintf(p, "\"xclk\":%u,", s->xclk_freq_hz / 1000000);
+  // ***xclk***=4, готовим значение частоты входного тактового сигнала
+  // для передачи на страницу управления камерой
+  // p += sprintf(p, "\"xclk\":%u,", s->xclk_freq_hz / 1000000);
   p += sprintf(p, "\"pixformat\":%u,", s->pixformat);
   p += sprintf(p, "\"framesize\":%u,", s->status.framesize);
   p += sprintf(p, "\"quality\":%u,", s->status.quality);
@@ -647,7 +648,9 @@ static esp_err_t status_handler(httpd_req_t *req)
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
   return httpd_resp_send(req, json_response, strlen(json_response));
 }
-
+// ***xclk***=3, обработчика HTTP-запроса по изменению частоты
+// входного тактового сигнала
+/*
 static esp_err_t xclk_handler(httpd_req_t *req) 
 {
   char *buf = NULL;
@@ -678,7 +681,7 @@ static esp_err_t xclk_handler(httpd_req_t *req)
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
   return httpd_resp_send(req, NULL, 0);
 }
-
+*/
 static esp_err_t reg_handler(httpd_req_t *req) 
 {
   char *buf = NULL;
@@ -932,7 +935,9 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
-
+  // ***xclk***=2, регистрация URI-обработчика HTTP-запроса по изменению частоты
+  // входного тактового сигнала
+  /*
   httpd_uri_t xclk_uri = 
   {
     .uri = "/xclk",
@@ -946,7 +951,7 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
-
+  */
   httpd_uri_t reg_uri = 
   {
     .uri = "/reg",
@@ -1006,14 +1011,15 @@ void startCameraServer()
   ra_filter_init(&ra_filter, 20);
 
   log_i("Запущен веб-сервер по порту: '%d'", config.server_port);
-  if (httpd_start(&camera_httpd, &config) == ESP_OK) {
+  if (httpd_start(&camera_httpd, &config) == ESP_OK) 
+  {
     httpd_register_uri_handler(camera_httpd, &index_uri);
     httpd_register_uri_handler(camera_httpd, &cmd_uri);
     httpd_register_uri_handler(camera_httpd, &status_uri);
     httpd_register_uri_handler(camera_httpd, &capture_uri);
     httpd_register_uri_handler(camera_httpd, &bmp_uri);
-
-    httpd_register_uri_handler(camera_httpd, &xclk_uri);
+    // ***xclk***=9, подключаем обработчик по изменению частоты тактового сигнала
+    // httpd_register_uri_handler(camera_httpd, &xclk_uri);
     httpd_register_uri_handler(camera_httpd, &reg_uri);
     httpd_register_uri_handler(camera_httpd, &greg_uri);
     httpd_register_uri_handler(camera_httpd, &pll_uri);

@@ -393,6 +393,9 @@ input.toggle-section-button:checked+section.toggle-section {
 /* 2026-03-11  "aec-group", "aec2-group", "aec_value-group" в CSS делаем невидимыми */
 #aec-group, #aec2-group,     #aec_value-group   {display:none}
 #agc-group, #agc_gain-group, #gainceiling-group {display:none}
+
+/* ***xclk***=8, "set-xclk-group" в CSS делаем невидимым */
+#set-xclk-group {display:none}
 </style>
 </head>
 
@@ -411,6 +414,7 @@ input.toggle-section-button:checked+section.toggle-section {
       <nav id="menu">
 
       <section id="xclk-section" class="nothidden">
+        <!-- ***xclk***=7, "set-xclk-group" в CSS делаем невидимым -->
         <div class="input-group" id="set-xclk-group">
           <label for="set-xclk">XCLK MHz</label>
           <div class="text">
@@ -426,9 +430,8 @@ input.toggle-section-button:checked+section.toggle-section {
       </section>
 
       <div class="input-group" id="framesize-group">
-        <label for="framesize">Разрешение</label>
+        <label for="framesize">Разрешение<!-- 2MP --></label>
         <select id="framesize" class="default-action">
-          <!-- 2MP -->
           <option value="15">UXGA(1600x1200)</option>
           <option value="14">SXGA(1280x1024)</option>
           <option value="13">HD(1280x720)</option>
@@ -437,14 +440,7 @@ input.toggle-section-button:checked+section.toggle-section {
           <option value="10">VGA(640x480)</option>
           <option value="9">HVGA(480x320)</option>
           <option value="8">CIF(400x296)</option>
-          <!--option value="7">320x320</option--> <!-- Unsupported on ov2640 -->
           <option value="6">QVGA(320x240)</option>
-          <option value="5">240x240</option>
-          <option value="4">HQVGA(240x176)</option>
-          <option value="3">QCIF(176x144)</option>
-          <option value="2">128x128</option>
-          <option value="1">QQVGA(160x120)</option>
-          <option value="0">96x96</option>
         </select>
       </div>
 
@@ -461,15 +457,6 @@ input.toggle-section-button:checked+section.toggle-section {
         <input type="range" id="brightness" min="-2" max="2" value="0" class="default-action">
         <div class="range-max">2</div>
       </div>
-      
-      <!-- 
-      <div class="input-group" id="ae_level-group">
-        <label for="ae_level">AE Level - уровни яркости</label>
-        <div class="range-min">-2</div>
-        <input type="range" id="ae_level" min="-2" max="2" value="0" class="default-action">
-        <div class="range-max">2</div>
-      </div>
-       -->
       
       <div class="input-group" id="contrast-group">
         <label for="contrast">Контрастность</label>
@@ -703,27 +690,34 @@ document.addEventListener('DOMContentLoaded', function (event)
       cb(code, txt);
     });
   }
-
+  // ***xclk***=6, запускаем страницу на изменение частоты входного тактового сигнала
+  /*
   function setXclk(xclk, cb)
   {
     fetchUrl(`${baseHost}/xclk?xclk=${xclk}`, cb);
   }
-
+  */
   function setWindow(start_x, start_y, end_x, end_y, offset_x, offset_y, total_x, total_y, output_x, output_y, scaling, binning, cb)
   {
     fetchUrl(`${baseHost}/resolution?sx=${start_x}&sy=${start_y}&ex=${end_x}&ey=${end_y}&offx=${offset_x}&offy=${offset_y}&tx=${total_x}&ty=${total_y}&ox=${output_x}&oy=${output_y}&scale=${scaling}&binning=${binning}`, cb);
   }
-
+  // ***xclk***=5, отрабатываем клик на изменение частоты входного тактового сигнала
+  // в Мгц на странице управления камерой
+  /*
   const setXclkButton = document.getElementById('set-xclk')
-  setXclkButton.onclick = () => {
+  setXclkButton.onclick = () => 
+  {
     let xclk = parseInt(document.getElementById('xclk').value);
 
-    setXclk(xclk, function(code, txt){
-      if(code != 200){
+    setXclk(xclk, function(code, txt)
+    {
+      if(code != 200)
+      {
         alert('Error['+code+']: '+txt);
       }
     });
   }
+  */
 
   const setRegValue = (el) => 
   {
@@ -1025,7 +1019,6 @@ document.addEventListener('DOMContentLoaded', function (event)
       show(agcGain)
     }
   }
-
   // Exposure
   const aec = document.getElementById('aec')
   const exposure = document.getElementById('aec_value-group')
@@ -1033,10 +1026,8 @@ document.addEventListener('DOMContentLoaded', function (event)
     updateConfig(aec)
     aec.checked ? hide(exposure) : show(exposure)
   }
-
   // Detection and framesize
   const framesize = document.getElementById('framesize')
-
   framesize.onchange = () => {
     updateConfig(framesize)
   }
