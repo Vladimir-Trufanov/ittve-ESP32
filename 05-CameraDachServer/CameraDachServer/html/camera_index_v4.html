@@ -210,18 +210,18 @@ input[type=range]::-webkit-slider-thumb {
   margin-top: -11.5px
 }
 
-            input[type=range]:focus::-webkit-slider-runnable-track {
-                background: #EFEFEF
-            }
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #EFEFEF
+}
 
-            input[type=range]::-moz-range-track {
-                width: 100%;
-                height: 2px;
-                cursor: pointer;
-                background: #EFEFEF;
-                border-radius: 0;
-                border: 0 solid #EFEFEF
-            }
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 2px;
+  cursor: pointer;
+  background: #EFEFEF;
+  border-radius: 0;
+  border: 0 solid #EFEFEF
+}
 
             input[type=range]::-moz-range-thumb {
                 border: 1px solid rgba(0,0,30,0);
@@ -405,7 +405,7 @@ input.toggle-section-button:checked+section.toggle-section {
 <section class="main">
   
   <div id="logo">
-     <label for="nav-toggle-cb" id="nav-toggle">&#9776;&nbsp;&nbsp;OV2640 ESP32-CAM</label>
+     <label for="nav-toggle-cb" id="nav-toggle">&#9776;&nbsp;&nbsp;OV2640 на контроллере ESP32-CAM</label>
   </div>
   
   <div id="content">
@@ -697,10 +697,7 @@ document.addEventListener('DOMContentLoaded', function (event)
     fetchUrl(`${baseHost}/xclk?xclk=${xclk}`, cb);
   }
   */
-  function setWindow(start_x, start_y, end_x, end_y, offset_x, offset_y, total_x, total_y, output_x, output_y, scaling, binning, cb)
-  {
-    fetchUrl(`${baseHost}/resolution?sx=${start_x}&sy=${start_y}&ex=${end_x}&ey=${end_y}&offx=${offset_x}&offy=${offset_y}&tx=${total_x}&ty=${total_y}&ox=${output_x}&oy=${output_y}&scale=${scaling}&binning=${binning}`, cb);
-  }
+  
   // ***xclk***=5, отрабатываем клик на изменение частоты входного тактового сигнала
   // в Мгц на странице управления камерой
   /*
@@ -826,31 +823,6 @@ document.addEventListener('DOMContentLoaded', function (event)
     {
       updateConfig(el);
     }
-    /* 
-    // Сворачиваем/раскрываем:
-    // "aec"           - AEC SENSOR - контроль экспозиции;
-    // "agc"           - AGC - освещенность;
-    else if (!updateRemote)
-    {
-      if (el.id === "aec")
-      {
-        value ? hide(exposure) : show(exposure)
-      } 
-      else if (el.id === "agc")
-      {
-        if (value) 
-        {
-          show(gainCeiling)
-          hide(agcGain)
-        } 
-        else 
-        {
-          hide(gainCeiling)
-          show(agcGain)
-        }
-      }
-    }
-    */
   }
   // ---
   // Если поступила команда на обновление значений в памяти через страницу

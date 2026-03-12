@@ -2,7 +2,7 @@
  * 
  * Построить работу сервера потока изображений
  * 
- * v4.0.1, 03.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.2, 12.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
 **/
@@ -793,43 +793,6 @@ static esp_err_t pll_handler(httpd_req_t *req)
   return httpd_resp_send(req, NULL, 0);
 }
 
-static esp_err_t win_handler(httpd_req_t *req) 
-{
-  char *buf = NULL;
-
-  if (parse_get(req, &buf) != ESP_OK) 
-  {
-    return ESP_FAIL;
-  }
-
-  int startX = parse_get_var(buf, "sx", 0);
-  int startY = parse_get_var(buf, "sy", 0);
-  int endX = parse_get_var(buf, "ex", 0);
-  int endY = parse_get_var(buf, "ey", 0);
-  int offsetX = parse_get_var(buf, "offx", 0);
-  int offsetY = parse_get_var(buf, "offy", 0);
-  int totalX = parse_get_var(buf, "tx", 0);
-  int totalY = parse_get_var(buf, "ty", 0);  // codespell:ignore totaly
-  int outputX = parse_get_var(buf, "ox", 0);
-  int outputY = parse_get_var(buf, "oy", 0);
-  bool scale = parse_get_var(buf, "scale", 0) == 1;
-  bool binning = parse_get_var(buf, "binning", 0) == 1;
-  free(buf);
-
-  log_i(
-    "Set Window: Start: %d %d, End: %d %d, Offset: %d %d, Total: %d %d, Output: %d %d, Scale: %u, Binning: %u",startX,startY,endX,endY,
-    offsetX,offsetY,totalX,totalY,outputX,outputY,scale, binning  // codespell:ignore totaly
-  );
-  sensor_t *s = esp_camera_sensor_get();
-  int res = s->set_res_raw(s,startX,startY,endX,endY,offsetX,offsetY,totalX,totalY,outputX,outputY,scale,binning);  // codespell:ignore totaly
-  if (res) {
-    return httpd_resp_send_500(req);
-  }
-
-  httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-  return httpd_resp_send(req, NULL, 0);
-}
-
 static esp_err_t index_handler(httpd_req_t *req) 
 {
   httpd_resp_set_type(req, "text/html");
@@ -850,8 +813,8 @@ static esp_err_t index_handler(httpd_req_t *req)
 void startCameraServer() 
 {
   httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-  config.max_uri_handlers = 16;
-
+  config.max_uri_handlers = 10;
+  // httpd_uri_t:1
   httpd_uri_t index_uri = 
   {
     .uri = "/",
@@ -865,7 +828,7 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
-
+  // httpd_uri_t:2
   httpd_uri_t status_uri = 
   {
     .uri = "/status",
@@ -879,7 +842,7 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
-
+  // httpd_uri_t:3
   httpd_uri_t cmd_uri = 
   {
     .uri = "/control",
@@ -893,7 +856,7 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
-
+  // httpd_uri_t:4
   httpd_uri_t capture_uri = 
   {
     .uri = "/capture",
@@ -907,7 +870,7 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
-
+  // httpd_uri_t:5
   httpd_uri_t stream_uri = 
   {
     .uri = "/stream",
@@ -921,7 +884,7 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
-
+  // httpd_uri_t:6
   httpd_uri_t bmp_uri = 
   {
     .uri = "/bmp",
@@ -952,6 +915,7 @@ void startCameraServer()
     #endif
   };
   */
+  // httpd_uri_t:7
   httpd_uri_t reg_uri = 
   {
     .uri = "/reg",
@@ -965,7 +929,7 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
-
+  // httpd_uri_t:8
   httpd_uri_t greg_uri = 
   {
     .uri = "/greg",
@@ -979,7 +943,7 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
-
+  // httpd_uri_t:9
   httpd_uri_t pll_uri = 
   {
     .uri = "/pll",
@@ -994,22 +958,7 @@ void startCameraServer()
     #endif
   };
 
-  httpd_uri_t win_uri = 
-  {
-    .uri = "/resolution",
-    .method = HTTP_GET,
-    .handler = win_handler,
-    .user_ctx = NULL
-    #ifdef CONFIG_HTTPD_WS_SUPPORT
-      ,
-      .is_websocket = true,
-      .handle_ws_control_frames = false,
-      .supported_subprotocol = NULL
-    #endif
-  };
-
   ra_filter_init(&ra_filter, 20);
-
   log_i("Запущен веб-сервер по порту: '%d'", config.server_port);
   if (httpd_start(&camera_httpd, &config) == ESP_OK) 
   {
@@ -1023,7 +972,7 @@ void startCameraServer()
     httpd_register_uri_handler(camera_httpd, &reg_uri);
     httpd_register_uri_handler(camera_httpd, &greg_uri);
     httpd_register_uri_handler(camera_httpd, &pll_uri);
-    httpd_register_uri_handler(camera_httpd, &win_uri);
+    //httpd_register_uri_handler(camera_httpd, &win_uri);
   }
 
   config.server_port += 1;
