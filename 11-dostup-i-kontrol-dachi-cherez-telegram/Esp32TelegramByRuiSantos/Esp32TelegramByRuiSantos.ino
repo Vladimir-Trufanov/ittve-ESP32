@@ -54,7 +54,7 @@ const char* password = "b277a4ee84e8";
 
 // Initialize Telegram BOT
 // String BOTtoken = "XXXXXXXXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";  // your Bot Token (Get from Botfather)
-// String BOTtoken = "6610230475:AAHSLATpcFDQF6sS9UycZoYK_vjIcAaegDg";  // @tve58bot
+// String BOTtoken = "*";  // @tve58bot
 
 // Используйте @myidbot, чтобы узнать идентификатор Вашего чата. Также обратите внимание, 
 // что вам нужно нажать "start", прежде чем он сможет отправить вам сообщение
@@ -66,8 +66,8 @@ const char* password = "b277a4ee84e8";
 // String CHAT_ID = "6610230475";
 // String CHAT_ID = "7348764883";
 
-String BOTtoken = "7348764883:AAER1MlELtB7H2bn6sJyAG1q3eE2ypoVzlk";  // @tveEsp_bot
-String CHAT_ID = "5302818460";
+String BOTtoken = "*";  // @tveEsp_bot
+String CHAT_ID = "*";
 
 // Отмечаем, что еще не пришло время отправить новую фотографию в вашу учетную запись telegram
 bool sendPhoto = false;

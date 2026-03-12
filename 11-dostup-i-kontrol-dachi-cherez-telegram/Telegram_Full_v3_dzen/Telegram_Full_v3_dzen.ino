@@ -50,8 +50,8 @@
 const char* ssid     = "OPPO A9 2020";
 const char* password = "b277a4ee84e8";
 
-String chatId = "5302818460";
-String BOTtoken = "7348764883:AAER1MlELtB7H2bn6sJyAG1q3eE2ypoVzlk";  // @tveEsp_bot
+String chatId = "*";
+String BOTtoken = "*";  // @tveEsp_bot
 
 bool sendPhoto = false;
 

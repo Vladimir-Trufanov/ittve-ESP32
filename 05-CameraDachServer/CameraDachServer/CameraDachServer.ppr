@@ -36,16 +36,16 @@ CameraDachServer
 3=CameraDachServer.ino
 [Selected Project Files]
 Main=
-Selected=camera_index.h
+Selected=html\camera_index_v4.html
 [app_httpd.cpp]
-TopLine=453
-Caret=26,465
+TopLine=796
+Caret=18,796
 [html\camera_index_v4.html]
-TopLine=1001
-Caret=1,1039
+TopLine=396
+Caret=84,408
 [camera_index.h]
-TopLine=105
-Caret=1,129
+TopLine=131
+Caret=39,155
 [CameraDachServer.ino]
 TopLine=59
 Caret=1,88

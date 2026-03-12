@@ -270,8 +270,8 @@ Good. Now let's choose a username for your bot. It must end in `bot`. Like this,
 
 Используйте этот токен для доступа к HTTP API:
 
-7348764883:AAER1MlELtB7H2bn6sJyAG1q3eE2ypoVzlk
-7348764883:AAER1MlELtB7H2bn6sJyAG1q3eE2ypoVzlk
+734876488*3:*
+734876488*3:*
 
 Берегите свой токен и храните его в надежном месте, он может быть использован кем угодно для управления вашим ботом.
 
