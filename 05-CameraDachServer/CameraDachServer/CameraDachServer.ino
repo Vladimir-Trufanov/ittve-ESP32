@@ -1,6 +1,6 @@
 /** Arduino, ESP32, C/C++ **************************** CameraDachServer.ino ***
  * 
- * v4.0.6, 11.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.7, 13.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
  * Preferences:       https://espressif.github.io/arduino-esp32/package_esp32_dev_index.json
@@ -28,16 +28,13 @@ const char* soft_ap_password = "DachaSad";
 //const char* soft_ap_ssid     = "Proba3";  
 //const char* soft_ap_password = "Proba3";
 
-//#define CORE_DEBUG_LEVEL 5
-
 // Настраиваем логирование скетча
-// #include "project_config.h"                        // не подключаем конфигурационный файл
 #define CONFIG_RLOG_PROJECT_LEVEL RLOG_LEVEL_VERBOSE  // выводим сообщения всех уровней
 #define CONFIG_RLOG_SHOW_TIMESTAMP 0                  // не выводим отметок времени
 #define CONFIG_RLOG_SHOW_FILEINFO 0                   // не выводим отметку о месте сообщения в скетче
+static const char* rl = "CDS";                        // указали тег сообщений "CameraDachServe"
 #include "rLog.h"                                      
-static const char* rl = "cds";                        // указали тег сообщений
-
+#include "ctrl_define.h"
 
 void startCameraServer();
 void setupLedFlash();
@@ -50,9 +47,9 @@ void setup()
   delay(5000);
   
   // Показываем контрольные определения
-  #include "ctrl_define.h"
-  //CtrlDefine();
-  
+  // CtrlDefine();
+  log_i("Контрольная проверка %s", "логирования");
+
   // Конфигурируем камеру 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -73,6 +70,7 @@ void setup()
   config.pin_sccb_scl = SIOC_GPIO_NUM;
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
+  
   // 2026-03-11 в коде приложения оставлен весь путь работы с параметром xclk, как пример.
   // Пример, можно отследить по меткам ***xclk***:
   // ***xclk***=1, устанавливаем рекомендованную частоту входного тактового сигнала 
@@ -90,6 +88,7 @@ void setup()
   // ***xclk***=8, "set-xclk-group" в CSS делаем невидимым 
   // ***xclk***=9, подключаем обработчик по изменению частоты тактового сигнала
   config.xclk_freq_hz = 20000000;
+  
   // 2026-03-11 в коде приложения на странице управления камерой 
   // убираем некоторые форматы изображения:
   // <!--option value="7">320x320</option--> <!-- Unsupported on ov2640 -->
@@ -123,7 +122,8 @@ void setup()
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) 
   {
-    Serial.printf("Ошибка инициализации камеры 0x%x", err);
+    //Serial.printf("Ошибка инициализации камеры 0x%x", err);
+    log_i("Ошибка инициализации камеры 0x%x", err);
     return;
   }
   // Выполняем начальную перенастройку кадров

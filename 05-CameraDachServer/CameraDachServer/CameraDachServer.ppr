@@ -18,9 +18,8 @@ Extensions=*.*
 [Project tree]
 CameraDachServer
 	+CameraDachServer
-		-html
+		+html
 			html\camera_index_v4.html
-			html\CAMERA_PARAMETERS.md
 			html\CameraDachParms.md
 		app_httpd.cpp
 		board_config.h
@@ -29,6 +28,8 @@ CameraDachServer
 		CameraDachServer.ppr
 		ci.yml
 		ctrl_define.h
+		rLog.cpp
+		rLog.h
 [Open project files]
 0=app_httpd.cpp
 1=html\camera_index_v4.html
@@ -37,19 +38,19 @@ CameraDachServer
 4=ctrl_define.h
 [Selected Project Files]
 Main=
-Selected=CameraDachServer.ino
+Selected=camera_index.h
 [app_httpd.cpp]
-TopLine=340
-Caret=1,377
+TopLine=583
+Caret=16,587
 [html\camera_index_v4.html]
-TopLine=973
-Caret=1,1011
+TopLine=961
+Caret=1,999
 [camera_index.h]
-TopLine=146
+TopLine=573
 Caret=39,155
 [CameraDachServer.ino]
-TopLine=15
-Caret=9,3
+TopLine=69
+Caret=3,91
 [ctrl_define.h]
-TopLine=1
-Caret=1,28
+TopLine=137
+Caret=1,165

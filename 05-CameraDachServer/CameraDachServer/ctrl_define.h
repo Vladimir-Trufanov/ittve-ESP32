@@ -8,9 +8,13 @@
  * 
 **/
 
-#define CTRL_DEF
+// Определяем макросы для перевода сообщений log_* в сообщения,
+// выводимые в последовательный порт rlog_*
+#define log_i(imsay, ...);  rlog_i(rl, imsay,  ##__VA_ARGS__);   // log_printf(ARDUHAL_LOG_FORMAT(V, format), ##__VA_ARGS__)
+#define log_e(imsay, ...);  rlog_e(rl, imsay,  ##__VA_ARGS__);   // #define log_e(imsay); rlog_e(rl, imsay);
 
-#ifdef CTRL_DEF
+void CtrlDefine()
+{
 /*
 ARDUINO_ARCH_ESP32 — макрос, который определяет, что код предназначен для микроконтроллера 
 серии ESP32 (и её вариантов, таких как ESP32-C3, ESP32-S2, ESP32-S3 и др.). 
@@ -114,15 +118,6 @@ Serial.print("CONFIG_ARDUHAL_ESP_LOG=");
   Serial.println("Не определен!");
 #endif
 
-/*
-#define ARDUHAL_LOG_LEVEL ARDUHAL_LOG_LEVEL_INFO
-esp_log_level_set("*", ESP_LOG_INFO);
-#define ARDUHAL_LOG_LEVEL ARDUHAL_LOG_LEVEL_INFO
-
-#include "esp32-hal-log.h"
-#define USE_ESP_IDF_LOG ESP_LOGI
-*/
-
 Serial.print("ARDUHAL_LOG_LEVEL=");
 #ifdef ARDUHAL_LOG_LEVEL
   Serial.println(ARDUHAL_LOG_LEVEL);
@@ -168,38 +163,12 @@ esp_log_va(esp_log_config_t config, const char tag, const char format, va_list a
 последовательном терминале. В этом случае нужно проверить настройки последовательного 
 терминала: например, убедиться, что DTR включён и выключен, пока открыт последовательный терминал.
 */
-
 Serial.print("USE_ESP_IDF_LOG=");
 #ifdef USE_ESP_IDF_LOG
   Serial.println(USE_ESP_IDF_LOG);
 #else
   Serial.println("Не определен!");
 #endif
-
-/*
-#if defined(ARDUINO_ARCH_ESP32) && defined(CONFIG_ARDUHAL_ESP_LOG)
-#include "esp32-hal-log.h"
-#endif
-*/
-
-// Определяем макросы для перевода сообщений log_* в сообщения,
-// выводимые в последовательный порт rlog_*
-#define log_e(imsay); rlog_e(rl, imsay);
-
-rlog_v(rl, "Test message %s", "VERBOSE");
-rlog_d(rl, "Test message %s", "DEBUG");
-rlog_i(rl, "Test message %s", "INFORMATION");
-rlog_w(rl, "Test message %s", "WARNING");
-rlog_e(rl, "Test message %s", "ERROR");
-
-rlog_e(rl, "Проверка сообщения log_e");
-log_e("Проверка сообщения log_e");
-rlog_i(rl, "Проверка сообщения log_i");
-
-log_e("Не удалось выполнить захват с камеры");
-
-
-#endif
-
+}
 
 // ********************************************************** ctrl_define.h ***

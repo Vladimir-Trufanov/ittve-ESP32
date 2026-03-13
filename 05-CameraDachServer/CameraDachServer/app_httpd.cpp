@@ -2,7 +2,7 @@
  * 
  * Построить работу сервера потока изображений
  * 
- * v4.0.2, 12.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.3, 13.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
 **/
@@ -86,25 +86,11 @@
   Важно учитывать, что эта функция не может поднять уровень журнала выше уровня, 
   установленного с помощью параметра CONFIG_LOG_MAXIMUM_LEVEL в menuconfig. 
 */
-//#include "ctrl_define.h"
-
 //   esp32-hal-log.h — библиотека для работы с логированием на микроконтроллере ESP32, 
 // которая «встроена» в Framework Arduino для ESP32. 
 //   esp_log.h — библиотека логирования, доступная в фреймворке ESP-IDF. 
 // Таким образом, esp32-hal-log.h предоставляет дополнительные возможности 
 // для работы с логированием, которые не доступны в esp_log.h.
-
-//Serial.print("CONFIG_HTTPD_WS_SUPPORT=");
-//#ifdef CONFIG_HTTPD_WS_SUPPORT
-//    Serial.println(CONFIG_HTTPD_WS_SUPPORT);
-//  #else
-//    Serial.println("Не определен!");
-//  #endif
-
-//#if defined(ARDUINO_ARCH_ESP32) && defined(CONFIG_ARDUHAL_ESP_LOG)
-//#include "esp32-hal-log.h"
-//#endif
-
 typedef struct 
 {
   httpd_req_t *req;
