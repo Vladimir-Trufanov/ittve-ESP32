@@ -28,10 +28,19 @@ const char* soft_ap_password = "DachaSad";
 //const char* soft_ap_ssid     = "Proba3";  
 //const char* soft_ap_password = "Proba3";
 
+//#define CORE_DEBUG_LEVEL 5
+
+// Настраиваем логирование скетча
+// #include "project_config.h"                        // не подключаем конфигурационный файл
+#define CONFIG_RLOG_PROJECT_LEVEL RLOG_LEVEL_VERBOSE  // выводим сообщения всех уровней
+#define CONFIG_RLOG_SHOW_TIMESTAMP 0                  // не выводим отметок времени
+#define CONFIG_RLOG_SHOW_FILEINFO 0                   // не выводим отметку о месте сообщения в скетче
+#include "rLog.h"                                      
+static const char* rl = "cds";                        // указали тег сообщений
+
+
 void startCameraServer();
 void setupLedFlash();
-
-#include "ctrl_define.h"
 
 void setup() 
 {
@@ -41,7 +50,9 @@ void setup()
   delay(5000);
   
   // Показываем контрольные определения
-  CtrlDefine();
+  #include "ctrl_define.h"
+  //CtrlDefine();
+  
   // Конфигурируем камеру 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
