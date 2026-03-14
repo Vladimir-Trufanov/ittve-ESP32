@@ -3,15 +3,25 @@
  *                                Показать контрольные определения к приложению
 
  * 
- * v4.0.1, 13.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.2, 14.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
 **/
+
+#pragma once
+
+// Настраиваем логирование скетча
+#define CONFIG_RLOG_PROJECT_LEVEL RLOG_LEVEL_VERBOSE  // выводим сообщения всех уровней
+#define CONFIG_RLOG_SHOW_TIMESTAMP 0                  // не выводим отметок времени
+#define CONFIG_RLOG_SHOW_FILEINFO 0                   // не выводим отметку о месте сообщения в скетче
+static const char* rl = "CDS";                        // указали тег сообщений "CameraDachServe"
+#include "rLog.h"                                      
 
 // Определяем макросы для перевода сообщений log_* в сообщения,
 // выводимые в последовательный порт rlog_*
 #define log_i(imsay, ...);  rlog_i(rl, imsay,  ##__VA_ARGS__);   // log_printf(ARDUHAL_LOG_FORMAT(V, format), ##__VA_ARGS__)
 #define log_e(imsay, ...);  rlog_e(rl, imsay,  ##__VA_ARGS__);   // #define log_e(imsay); rlog_e(rl, imsay);
+
 
 void CtrlDefine()
 {

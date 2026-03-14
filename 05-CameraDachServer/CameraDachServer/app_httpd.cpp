@@ -18,6 +18,54 @@
 #include "camera_index.h"
 #include "board_config.h"
 
+#include "rLog.h" 
+#include <WiFi.h>
+
+void InitWiFi(const char* ssid, const char* password, const char* soft_ap_ssid, const char* soft_ap_password)
+{
+  // Назначаем работу контроллера, как станции WiFi и с собственной сетью
+  WiFi.mode(WIFI_MODE_APSTA);
+  WiFi.softAP(soft_ap_ssid, soft_ap_password);
+  // Подключаемся к WiFi
+  WiFi.begin(ssid, password);
+  WiFi.setSleep(false);
+  Serial.print("Подключение к WiFi");
+  while (WiFi.status() != WL_CONNECTED) 
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi подключен");
+  
+  // Если статический адрес для TP-Link_B394
+  /*
+  Serial.print("Current ESP32 IP: ");      Serial.println(WiFi.localIP());
+  Serial.print("Gateway1 (router) IP: ");  Serial.println(WiFi.gatewayIP());
+  Serial.print("Subnet Mask: " );          Serial.println(WiFi.subnetMask());
+  Serial.print("Primary DNS: ");           Serial.println(WiFi.dnsIP(0));
+  Serial.print("Secondary DNS: ");         Serial.println(WiFi.dnsIP(1));
+  // Static IP configuration
+  IPAddress staticIP(192, 168, 0, 200); // ESP32 static IP
+  IPAddress gateway(192, 168, 0, 1);    // IP Address of your network gateway (router)
+  IPAddress subnet(255, 255, 255, 0);   // Subnet mask
+  IPAddress primaryDNS(192, 168, 0, 1); // Primary DNS (optional)
+  IPAddress secondaryDNS(0, 0, 0, 0);   // Secondary DNS (optional)
+  // Configuring static IP
+  if(!WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS)) 
+  {
+    Serial.println("Failed to configure Static IP");
+  } 
+  else 
+  {
+    Serial.println("Static IP configured!");
+  }
+  Serial.print("ESP32 IP Address: ");
+  Serial.println(WiFi.localIP());  // Print the ESP32 IP address to Serial Monitor
+  */
+
+}
+
 /*
     ARDUINO_ARCH_ESP32 — макрос, который определяется при компиляции с использованием 
   ядра ESP32 для Arduino. Он указывает на то, что плата — на базе микроконтроллера ESP32. 
@@ -25,7 +73,6 @@
     Макрос ARDUINO_ARCH_ESP32 используется в коде для проверки, что плата — ESP32. 
     Однако есть и ограничение: макрос ARDUINO_ARCH_ESP32 не определяется при работе 
   с ESP-IDF и arduino-esp32 как компонентом в других средах разработки. 
-
 
   ARDUHAL_LOG_LEVEL — макрос, который определяет уровень ведения журнала в Arduino ESP32. 
   Он переопределяет макросы ESP-IDF, которые поддерживают пять уровней: 
@@ -615,6 +662,7 @@ static esp_err_t status_handler(httpd_req_t *req)
   p += sprintf(p, "\"hmirror\":%u,", s->status.hmirror);
   p += sprintf(p, "\"vflip\":%u,", s->status.vflip);
   p += sprintf(p, "\"colorbar\":%u", s->status.colorbar);
+  //p += sprintf(p, "\"soft_ap_ssid\":%u", soft_ap_ssid);
   *p++ = '}';
   *p++ = 0;
   

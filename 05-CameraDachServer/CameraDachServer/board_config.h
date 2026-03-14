@@ -7,8 +7,7 @@
  * 
 **/
 
-#ifndef BOARD_CONFIG_H
-#define BOARD_CONFIG_H
+#pragma once
 
 // WARNING !!! 
 // Изображения будут переданы частично, если размер изображения превысит размер буфера.
@@ -88,7 +87,5 @@ OV2640 — CMOS-сенсор изображения с низким напряж
 #define VSYNC_GPIO_NUM 25
 #define HREF_GPIO_NUM  23
 #define PCLK_GPIO_NUM  22
-
-#endif  // BOARD_CONFIG_H
 
 // ********************************************************* board_config.h ***

@@ -11,11 +11,13 @@
  * Flash Mode:        "QIO"
 **/
 
-#include "esp_camera.h"
 #include <WiFi.h>
+#include "esp_camera.h"
 
 // Выбираем модель камеры
 #include "board_config.h"
+#include "ctrl_define.h"
+
 // Указываем учетные данные Wi-Fi
 // "OPPO A9 2020"; "TP-Link_B394"; "tve-DESKTOP"; "linksystve"; "linksystve";
 // "b277a4ee84e8"; "18009217"    ; "Ue18-647"   ; "x93k6kq6wf"; "X93K6KQ6WF";
@@ -28,14 +30,7 @@ const char* soft_ap_password = "DachaSad";
 //const char* soft_ap_ssid     = "Proba3";  
 //const char* soft_ap_password = "Proba3";
 
-// Настраиваем логирование скетча
-#define CONFIG_RLOG_PROJECT_LEVEL RLOG_LEVEL_VERBOSE  // выводим сообщения всех уровней
-#define CONFIG_RLOG_SHOW_TIMESTAMP 0                  // не выводим отметок времени
-#define CONFIG_RLOG_SHOW_FILEINFO 0                   // не выводим отметку о месте сообщения в скетче
-static const char* rl = "CDS";                        // указали тег сообщений "CameraDachServe"
-#include "rLog.h"                                      
-#include "ctrl_define.h"
-
+void InitWiFi(const char* ssid, const char* password, const char* soft_ap_ssid, const char* soft_ap_password);
 void startCameraServer();
 void setupLedFlash();
 
@@ -70,23 +65,6 @@ void setup()
   config.pin_sccb_scl = SIOC_GPIO_NUM;
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
-  
-  // 2026-03-11 в коде приложения оставлен весь путь работы с параметром xclk, как пример.
-  // Пример, можно отследить по меткам ***xclk***:
-  // ***xclk***=1, устанавливаем рекомендованную частоту входного тактового сигнала 
-  // для камеры OV2640 = 20 МГц (это единственная строка, связанная с xclk, которая не закоментирована). 
-  // ***xclk***=2, регистрация URI-обработчика HTTP-запроса по изменению частоты
-  // входного тактового сигнала.
-  // ***xclk***=3, обработчика HTTP-запроса по изменению частоты
-  // входного тактового сигнала
-  // ***xclk***=4, готовим значение частоты входного тактового сигнала
-  // для передачи на страницу управления камерой
-  // ***xclk***=5, отрабатываем клик на изменение частоты входного тактового сигнала
-  // в Мгц на странице управления камерой
-  // ***xclk***=6, запускаем страницу на изменение частоты входного тактового сигнала
-  // ***xclk***=7, "set-xclk-group" в CSS делаем невидимым
-  // ***xclk***=8, "set-xclk-group" в CSS делаем невидимым 
-  // ***xclk***=9, подключаем обработчик по изменению частоты тактового сигнала
   config.xclk_freq_hz = 20000000;
   
   // 2026-03-11 в коде приложения на странице управления камерой 
@@ -133,48 +111,11 @@ void setup()
   {
     s->set_framesize(s, FRAMESIZE_QVGA);
   }
+
   // Назначаем работу контроллера, как станции WiFi и с собственной сетью
-  WiFi.mode(WIFI_MODE_APSTA);
-  WiFi.softAP(soft_ap_ssid, soft_ap_password);
-  // Подключаемся к WiFi
-  WiFi.begin(ssid, password);
-  WiFi.setSleep(false);
-  Serial.print("Подключение к WiFi");
-  while (WiFi.status() != WL_CONNECTED) 
-  {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi подключен");
+  InitWiFi(ssid, password, soft_ap_ssid, soft_ap_password);
   Serial.print("IP собственной сети: ");  Serial.print(WiFi.softAPIP()); Serial.print("  "); Serial.println(soft_ap_ssid);
   Serial.print("IP рабочей станции:  ");  Serial.print(WiFi.localIP());  Serial.print("  "); Serial.println(ssid);
-
-  // Если статический адрес для TP-Link_B394
-  /*
-  Serial.print("Current ESP32 IP: ");      Serial.println(WiFi.localIP());
-  Serial.print("Gateway1 (router) IP: ");  Serial.println(WiFi.gatewayIP());
-  Serial.print("Subnet Mask: " );          Serial.println(WiFi.subnetMask());
-  Serial.print("Primary DNS: ");           Serial.println(WiFi.dnsIP(0));
-  Serial.print("Secondary DNS: ");         Serial.println(WiFi.dnsIP(1));
-  // Static IP configuration
-  IPAddress staticIP(192, 168, 0, 200); // ESP32 static IP
-  IPAddress gateway(192, 168, 0, 1);    // IP Address of your network gateway (router)
-  IPAddress subnet(255, 255, 255, 0);   // Subnet mask
-  IPAddress primaryDNS(192, 168, 0, 1); // Primary DNS (optional)
-  IPAddress secondaryDNS(0, 0, 0, 0);   // Secondary DNS (optional)
-  // Configuring static IP
-  if(!WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS)) 
-  {
-    Serial.println("Failed to configure Static IP");
-  } 
-  else 
-  {
-    Serial.println("Static IP configured!");
-  }
-  Serial.print("ESP32 IP Address: ");
-  Serial.println(WiFi.localIP());  // Print the ESP32 IP address to Serial Monitor
-  */
   
   startCameraServer();
 
@@ -189,5 +130,27 @@ void loop()
   // Трансляция потока выполняется веб-сервером в другой задаче
   delay(100);  // give CPU some idle time
 }
+
+// 2026-03-11 в коде приложения оставлен весь путь работы с параметром xclk, как пример.
+// Пример, можно отследить по меткам ***xclk***:
+// ***xclk***=1, устанавливаем рекомендованную частоту входного тактового сигнала 
+// для камеры OV2640 = 20 МГц (это единственная строка, связанная с xclk, которая не закоментирована). 
+// ***xclk***=2, регистрация URI-обработчика HTTP-запроса по изменению частоты
+// входного тактового сигнала.
+// ***xclk***=3, обработчика HTTP-запроса по изменению частоты
+// входного тактового сигнала
+// ***xclk***=4, готовим значение частоты входного тактового сигнала
+// для передачи на страницу управления камерой
+// ***xclk***=5, отрабатываем клик на изменение частоты входного тактового сигнала
+// в Мгц на странице управления камерой
+// ***xclk***=6, запускаем страницу на изменение частоты входного тактового сигнала
+// ***xclk***=7, "set-xclk-group" в CSS делаем невидимым
+// ***xclk***=8, "set-xclk-group" в CSS делаем невидимым 
+// ***xclk***=9, подключаем обработчик по изменению частоты тактового сигнала
+
+// 2026-03-14 в коде приложения проходим путь сохранения фотографий, ***save***:
+// ***save***=1, кнопка сохранения фотографии
+// ***save***=2, связали кнопку с переменной
+// ***save***=3, отрабатываем кнопку сохранения фотографии
 
 // *************************************************** CameraDachServer.ino ***

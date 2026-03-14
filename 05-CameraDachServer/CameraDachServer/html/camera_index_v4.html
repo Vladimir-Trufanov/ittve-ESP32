@@ -584,8 +584,9 @@ input.toggle-section-button:checked+section.toggle-section {
 
     <figure>
     <div id="stream-container" class="image-container hidden">
-      <a id="save-still" href="#" class="button save" download="capture.jpg">Save</a>
-      <div class="close" id="close-stream">A?</div>
+      <!-- ***save***=1, кнопка сохранения фотографии -->
+      <a id="save-still" href="#" class="button save" download="capture.jpg">Сохранить</a>
+      <div class="close" id="close-stream">?</div>
       <img id="stream" src="" crossorigin>
     </div>
     </figure>
@@ -891,13 +892,13 @@ document.addEventListener('DOMContentLoaded', function (event)
     console.log("el.id:",elid,"state[el.id] =",stateelid);
     //console.log(" ");
   }  
-  // Выбираем элементы главной страницы
-  const view = document.getElementById('stream')
-  const viewContainer = document.getElementById('stream-container')
+  // Выбираем элементы (связываем с переменными) главной страницы
+  const view = document.getElementById('stream');                     // область потока изображений <img id="stream" src="" crossorigin>
+  const viewContainer = document.getElementById('stream-container');
   const stillButton = document.getElementById('get-still')
   const streamButton = document.getElementById('toggle-stream')
   const closeButton = document.getElementById('close-stream')
-  const saveButton = document.getElementById('save-still')
+  const saveButton = document.getElementById('save-still');           // ***save***=2, связали кнопку с переменной
   const ledGroup = document.getElementById('led-group')
 
   const stopStream = () => 
@@ -938,43 +939,55 @@ document.addEventListener('DOMContentLoaded', function (event)
       startStream()
     }
   }
-
-  saveButton.onclick = () => {
+  // ***save***=3, отрабатываем кнопку сохранения фотографии
+  saveButton.onclick = () => 
+  {
     var canvas = document.createElement("canvas");
     canvas.width = view.width;
     canvas.height = view.height;
     document.body.appendChild(canvas);
     var context = canvas.getContext('2d');
     context.drawImage(view,0,0);
-    try {
+    try 
+    {
       var dataURL = canvas.toDataURL('image/jpeg');
       saveButton.href = dataURL;
       var d = new Date();
-      saveButton.download = d.getFullYear() + ("0"+(d.getMonth()+1)).slice(-2) + ("0" + d.getDate()).slice(-2) + ("0" + d.getHours()).slice(-2) + ("0" + d.getMinutes()).slice(-2) + ("0" + d.getSeconds()).slice(-2) + ".jpg";
-    } catch (e) {
+      saveButton.download = 
+      d.getFullYear() + 
+      ("0"+(d.getMonth()+1)).slice(-2) + 
+      ("0" + d.getDate()).slice(-2) + 
+      ("0" + d.getHours()).slice(-2) + 
+      ("0" + d.getMinutes()).slice(-2) + 
+      ("0" + d.getSeconds()).slice(-2) + ".jpg";
+    } 
+    catch (e) 
+    {
       console.error(e);
     }
     canvas.parentNode.removeChild(canvas);
   }
-
-  // Attach default on change action
+  // Запускаем изменение всех элементов класса "default-action"
   document
-    .querySelectorAll('.default-action')
-    .forEach(el => {
-      el.onchange = () => updateConfig(el)
-    })
-
-  // Custom actions
+  .querySelectorAll('.default-action')
+  .forEach(el => 
+  {
+    el.onchange = () => updateConfig(el)
+  })
   // Gain
   const agc = document.getElementById('agc')
   const agcGain = document.getElementById('agc_gain-group')
   const gainCeiling = document.getElementById('gainceiling-group')
-  agc.onchange = () => {
+  agc.onchange = () => 
+  {
     updateConfig(agc)
-    if (agc.checked) {
+    if (agc.checked) 
+    {
       show(gainCeiling)
       hide(agcGain)
-    } else {
+    } 
+    else 
+    {
       hide(gainCeiling)
       show(agcGain)
     }
@@ -982,13 +995,15 @@ document.addEventListener('DOMContentLoaded', function (event)
   // Exposure
   const aec = document.getElementById('aec')
   const exposure = document.getElementById('aec_value-group')
-  aec.onchange = () => {
+  aec.onchange = () => 
+  {
     updateConfig(aec)
     aec.checked ? hide(exposure) : show(exposure)
   }
   // Detection and framesize
   const framesize = document.getElementById('framesize')
-  framesize.onchange = () => {
+  framesize.onchange = () => 
+  {
     updateConfig(framesize)
   }
 })
