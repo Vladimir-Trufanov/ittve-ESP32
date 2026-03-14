@@ -23,14 +23,8 @@
 // "b277a4ee84e8"; "18009217"    ; "Ue18-647"   ; "x93k6kq6wf"; "X93K6KQ6WF";
 const char* ssid     = "TP-Link_B394";
 const char* password = "18009217";
-// "DachaSad" - камера для съёмок на природе
-const char* soft_ap_ssid     = "DachaSad";  
-const char* soft_ap_password = "DachaSad";
-// "Proba3" = "ESP_75C391" - камера на 3-ем контроллере
-//const char* soft_ap_ssid     = "Proba3";  
-//const char* soft_ap_password = "Proba3";
 
-void InitWiFi(const char* ssid, const char* password, const char* soft_ap_ssid, const char* soft_ap_password);
+void InitWiFi(const char* ssid, const char* password);
 void startCameraServer();
 void setupLedFlash();
 
@@ -113,10 +107,10 @@ void setup()
   }
 
   // Назначаем работу контроллера, как станции WiFi и с собственной сетью
-  InitWiFi(ssid, password, soft_ap_ssid, soft_ap_password);
+  InitWiFi(ssid, password);
   Serial.print("IP собственной сети: ");  Serial.print(WiFi.softAPIP()); Serial.print("  "); Serial.println(soft_ap_ssid);
   Serial.print("IP рабочей станции:  ");  Serial.print(WiFi.localIP());  Serial.print("  "); Serial.println(ssid);
-  
+  // Запускаем в работу камеру                    
   startCameraServer();
 
   Serial.print("Камера готова! \n'http://");

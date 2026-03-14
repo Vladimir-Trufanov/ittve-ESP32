@@ -21,11 +21,14 @@
 #include "rLog.h" 
 #include <WiFi.h>
 
-void InitWiFi(const char* ssid, const char* password, const char* soft_ap_ssid, const char* soft_ap_password)
+// ****************************************************************************
+// *   Инициируем работу контроллера, как станции WiFi и с собственной сетью  *
+// ****************************************************************************
+void InitWiFi(const char* ssid, const char* password)
 {
-  // Назначаем работу контроллера, как станции WiFi и с собственной сетью
   WiFi.mode(WIFI_MODE_APSTA);
-  WiFi.softAP(soft_ap_ssid, soft_ap_password);
+  char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
+  WiFi.softAP(soft_apssid, soft_apssid);
   // Подключаемся к WiFi
   WiFi.begin(ssid, password);
   WiFi.setSleep(false);
@@ -63,7 +66,6 @@ void InitWiFi(const char* ssid, const char* password, const char* soft_ap_ssid, 
   Serial.print("ESP32 IP Address: ");
   Serial.println(WiFi.localIP());  // Print the ESP32 IP address to Serial Monitor
   */
-
 }
 
 /*
@@ -661,8 +663,8 @@ static esp_err_t status_handler(httpd_req_t *req)
   p += sprintf(p, "\"lenc\":%u,", s->status.lenc);
   p += sprintf(p, "\"hmirror\":%u,", s->status.hmirror);
   p += sprintf(p, "\"vflip\":%u,", s->status.vflip);
-  p += sprintf(p, "\"colorbar\":%u", s->status.colorbar);
-  //p += sprintf(p, "\"soft_ap_ssid\":%u", soft_ap_ssid);
+  p += sprintf(p, "\"colorbar\":%u,", s->status.colorbar);
+  p += sprintf(p, "\"soft_ap_ssid\":\"%s\"", soft_ap_ssid);
   *p++ = '}';
   *p++ = 0;
   
@@ -835,7 +837,9 @@ static esp_err_t index_handler(httpd_req_t *req)
     return httpd_resp_send_500(req);
   }
 }
-
+// ****************************************************************************
+// *                           Запустить в работу камеру                      *
+// ****************************************************************************
 void startCameraServer() 
 {
   httpd_config_t config = HTTPD_DEFAULT_CONFIG();
