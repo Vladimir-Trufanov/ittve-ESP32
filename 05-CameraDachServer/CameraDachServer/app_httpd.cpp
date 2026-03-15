@@ -2,7 +2,7 @@
  * 
  * Построить работу сервера потока изображений
  * 
- * v4.0.3, 13.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.4, 15.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
 **/
@@ -20,6 +20,11 @@
 
 #include "rLog.h" 
 #include <WiFi.h>
+
+// Параметры локальной и собственной сети контроллера для передачи в html
+char hssid[12];     // не более 11 символов, латиница
+char hlocalIP[18];
+char hsoftAPIP[18];
 
 // ****************************************************************************
 // *   Инициируем работу контроллера, как станции WiFi и с собственной сетью  *
@@ -40,6 +45,11 @@ void InitWiFi(const char* ssid, const char* password)
   }
   Serial.println("");
   Serial.println("WiFi подключен");
+  // Заполняем параметры для передачи в html через status_handler 
+  // [Вывод IPAddress в HTML](https://arduino.ru/forum/programmirovanie/vyvod-ipaddress-v-html)
+  String(ssid).toCharArray(hssid,String(ssid).length()+1); 
+  String ipaddr=WiFi.localIP().toString(); ipaddr.toCharArray(hlocalIP,ipaddr.length()+1); 
+  ipaddr=WiFi.softAPIP().toString(); ipaddr.toCharArray(hsoftAPIP,ipaddr.length()+1); 
   
   // Если статический адрес для TP-Link_B394
   /*
@@ -664,7 +674,11 @@ static esp_err_t status_handler(httpd_req_t *req)
   p += sprintf(p, "\"hmirror\":%u,", s->status.hmirror);
   p += sprintf(p, "\"vflip\":%u,", s->status.vflip);
   p += sprintf(p, "\"colorbar\":%u,", s->status.colorbar);
-  p += sprintf(p, "\"soft_ap_ssid\":\"%s\"", soft_ap_ssid);
+  // Включаем параметры локальной и собственной сети контроллера 
+  p += sprintf(p, "\"hssid\":\"%s\",",        hssid);
+  p += sprintf(p, "\"hlocalIP\":\"%s\",",     hlocalIP);
+  p += sprintf(p, "\"soft_ap_ssid\":\"%s\",", soft_ap_ssid);
+  p += sprintf(p, "\"hsoftAPIP\":\"%s\"",     hsoftAPIP);
   *p++ = '}';
   *p++ = 0;
   

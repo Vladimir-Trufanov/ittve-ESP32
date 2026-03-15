@@ -866,6 +866,14 @@ document.addEventListener('DOMContentLoaded', function (event)
   })
   .then(function (state) 
   {
+    //  if (el.id=="soft_ap_ssid")
+    //  {
+    //    elConsole(el,el.id,state[el.id])
+    elConsole(1,"hssid",        state["hssid"])
+    elConsole(2,"hlocalIP",     state["hlocalIP"])
+    elConsole(3,"soft_ap_ssid", state["soft_ap_ssid"])
+    elConsole(4,"hsoftAPIP",    state["hsoftAPIP"])
+    //  }
     // Перебираем html-строки класса "default-action"
     document
     .querySelectorAll('.default-action')
@@ -876,6 +884,7 @@ document.addEventListener('DOMContentLoaded', function (event)
     // так как только-что значения выбрали)
     .forEach(el => 
     {
+      // elConsole(el,el.id,state[el.id]);
       // Трассируем параметры по освещенности
       if ((el.id=="agc")||(el.id=="agc_gain")||(el.id=="gainceiling"))
       {
