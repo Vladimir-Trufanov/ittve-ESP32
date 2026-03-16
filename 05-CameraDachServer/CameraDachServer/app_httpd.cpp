@@ -2,7 +2,7 @@
  * 
  * Построить работу сервера потока изображений
  * 
- * v4.0.4, 15.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.5, 16.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
 **/
@@ -20,6 +20,8 @@
 
 #include "rLog.h" 
 #include <WiFi.h>
+
+#include "help.page"
 
 // Параметры локальной и собственной сети контроллера для передачи в html
 char hssid[12];     // не более 11 символов, латиница
@@ -834,7 +836,9 @@ static esp_err_t pll_handler(httpd_req_t *req)
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
   return httpd_resp_send(req, NULL, 0);
 }
-
+// ****************************************************************************
+// *                           Развернуть главную страницу                    *
+// ****************************************************************************
 static esp_err_t index_handler(httpd_req_t *req) 
 {
   httpd_resp_set_type(req, "text/html");
@@ -852,12 +856,20 @@ static esp_err_t index_handler(httpd_req_t *req)
   }
 }
 // ****************************************************************************
+// *                 Развернуть страницу помощи по камере                     *
+// ****************************************************************************
+static esp_err_t help_handler(httpd_req_t *req) 
+{
+  httpd_resp_set_type(req, "text/html");
+  return httpd_resp_send(req, help_page, HTTPD_RESP_USE_STRLEN);
+}
+// ****************************************************************************
 // *                           Запустить в работу камеру                      *
 // ****************************************************************************
 void startCameraServer() 
 {
   httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-  config.max_uri_handlers = 10;
+  config.max_uri_handlers = 12;
   // httpd_uri_t:1
   httpd_uri_t index_uri = 
   {
@@ -1001,6 +1013,20 @@ void startCameraServer()
       .supported_subprotocol = NULL
     #endif
   };
+  // httpd_uri_t:10
+  httpd_uri_t help_uri = 
+  {
+    .uri = "/help",
+    .method = HTTP_GET,
+    .handler = help_handler,
+    .user_ctx = NULL
+    #ifdef CONFIG_HTTPD_WS_SUPPORT
+      ,
+      .is_websocket = true,
+      .handle_ws_control_frames = false,
+      .supported_subprotocol = NULL
+    #endif
+  };
 
   ra_filter_init(&ra_filter, 20);
   log_i("Запущен веб-сервер по порту: '%d'", config.server_port);
@@ -1016,7 +1042,7 @@ void startCameraServer()
     httpd_register_uri_handler(camera_httpd, &reg_uri);
     httpd_register_uri_handler(camera_httpd, &greg_uri);
     httpd_register_uri_handler(camera_httpd, &pll_uri);
-    //httpd_register_uri_handler(camera_httpd, &win_uri);
+    httpd_register_uri_handler(camera_httpd, &help_uri);
   }
 
   config.server_port += 1;

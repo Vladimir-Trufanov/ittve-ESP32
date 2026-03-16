@@ -20,7 +20,9 @@ CameraDachServer
 	+CameraDachServer
 		+html
 			html\camera_index_v4.html
+			html\CameraDachParms.html
 			html\CameraDachParms.md
+			html\help.shablon
 		app_httpd.cpp
 		board_config.h
 		camera_index.h
@@ -28,33 +30,26 @@ CameraDachServer
 		CameraDachServer.ppr
 		ci.yml
 		ctrl_define.h
+		help.page
 		rLog.cpp
 		rLog.h
 [Open project files]
 0=app_httpd.cpp
-1=html\camera_index_v4.html
-2=camera_index.h
-3=CameraDachServer.ino
-4=ctrl_define.h
-5=board_config.h
+1=camera_index.h
+2=CameraDachServer.ino
+3=html\camera_index_v4.html
 [Selected Project Files]
 Main=
 Selected=camera_index.h
 [app_httpd.cpp]
-TopLine=669
-Caret=31,681
-[html\camera_index_v4.html]
-TopLine=984
-Caret=1,1023
+TopLine=840
+Caret=1,864
 [camera_index.h]
-TopLine=135
-Caret=39,155
+TopLine=151
+Caret=55,608
 [CameraDachServer.ino]
-TopLine=74
+TopLine=107
 Caret=1,113
-[ctrl_define.h]
-TopLine=14
-Caret=3,46
-[board_config.h]
-TopLine=5
-Caret=14,5
+[html\camera_index_v4.html]
+TopLine=979
+Caret=1,1019

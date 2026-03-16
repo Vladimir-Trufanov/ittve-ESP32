@@ -1,0 +1,409 @@
+const char help_page[] PROGMEM = R"=====(
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Untitled</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.line-block{white-space: pre-line;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="руководство-по-параметрам-камеры-esp32-cam">Руководство по параметрам камеры ESP32-CAM</h1>
+<h2 id="основные-параметры">📐 Основные параметры</h2>
+<h3 id="frame-size-разрешение">Frame Size (Разрешение)</h3>
+<p>Определяет размер захватываемого изображения.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Значение</th>
+<th>Разрешение</th>
+<th>Использование</th>
+<th>Производительность</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>6</td>
+<td>QVGA (320×240)</td>
+<td>Максимальная скорость</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>CIF (400×296)</td>
+<td>Высокая скорость</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>HVGA (480×320)</td>
+<td>- - - - -</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>VGA (640×480)</td>
+<td><strong>Рекомендуется</strong></td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>SVGA (800×600)</td>
+<td>Средняя скорость</td>
+<td>⭐⭐</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>XGA (1024×768)</td>
+<td>Низкая скорость</td>
+<td>⭐</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>HD (1280×720)</td>
+<td>Очень медленно</td>
+<td>⭐</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>SXGA (1280×1024)</td>
+<td>Очень медленно</td>
+<td>⭐</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td>UXGA (1600×1200)</td>
+<td>Экстремально медленно</td>
+<td>⭐</td>
+</tr>
+</tbody>
+</table>
+<h3 id="quality-качество-jpeg-0-63">Quality (Качество JPEG, 0-63)</h3>
+<p>Нижнее значение = лучше качество, но больше размер файла и медленнее передача.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Диапазон</th>
+<th>Качество</th>
+<th>Размер</th>
+<th>Скорость</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0-5</td>
+<td>Отличное</td>
+<td>Большой</td>
+<td>Медленно</td>
+</tr>
+<tr class="even">
+<td>6-10</td>
+<td>Хорошее</td>
+<td>Средний</td>
+<td>Средне ✅</td>
+</tr>
+<tr class="odd">
+<td>11-15</td>
+<td>Приемлемое</td>
+<td>Малый</td>
+<td>Быстро</td>
+</tr>
+<tr class="even">
+<td>16+</td>
+<td>Низкое</td>
+<td>Очень малый</td>
+<td>Очень быстро</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Рекомендация:</strong> 10-12 для баланса качества и скорости.</p>
+<h3 id="brightness-яркость--2-to-2">Brightness (Яркость, -2 to +2)</h3>
+<p>Общая яркость изображения.</p>
+<ul>
+<li><code>-2</code>: Очень темное (для очень яркого освещения)</li>
+<li><code>-1</code>: Темное (для яркого солнечного света)</li>
+<li><code>0</code>: Нормальное ✅</li>
+<li><code>+1</code>: Светлое (для помещений с умеренным светом)</li>
+<li><code>+2</code>: Очень светлое (для темных помещений)</li>
+</ul>
+<h3 id="contrast-контраст--2-to-2">Contrast (Контраст, -2 to +2)</h3>
+<p>Разница между светлыми и темными областями.</p>
+<ul>
+<li><code>-2</code>: Низкий контраст (плоское изображение)</li>
+<li><code>0</code>: Нормальный контраст</li>
+<li><code>+1</code>: Повышенный контраст ✅</li>
+<li><code>+2</code>: Высокий контраст (может быть слишком резко)</li>
+</ul>
+<h3 id="saturation-насыщенность--2-to-2">Saturation (Насыщенность, -2 to +2)</h3>
+<p>Интенсивность цветов.</p>
+<ul>
+<li><code>-2</code>: Черно-белое (монохром) ✅</li>
+<li><code>-1</code>: Низкая насыщенность</li>
+<li><code>0</code>: Нормальная насыщенность</li>
+<li><code>+1</code>: Высокая насыщенность</li>
+<li><code>+2</code>: Очень насыщенные цвета</li>
+</ul>
+<h2 id="специальные-эффекты">🎨 Специальные эффекты</h2>
+<h3 id="special-effect-специальный-эффект">Special Effect (Специальный эффект)</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Значение</th>
+<th>Эффект</th>
+<th>Использование</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>No Effect</td>
+<td>Обычное цветное изображение</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Negative</td>
+<td>Инверсия цветов</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td><strong>Grayscale</strong></td>
+<td>Черно-белое ✅</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Red Tint</td>
+<td>Красный оттенок</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Green Tint</td>
+<td>Зеленый оттенок</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>Blue Tint</td>
+<td>Синий оттенок</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>Sepia</td>
+<td>Сепия (винтажный вид)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="параметры-баланса-белого">🎯 Параметры баланса белого</h2>
+<h3 id="wb-mode-режим-баланса-белого">WB Mode (Режим баланса белого)</h3>
+<p>Коррекция белого света.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Значение</th>
+<th>Режим</th>
+<th>Использование</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>Auto</td>
+<td>Автоматический ✅</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Sunny</td>
+<td>Солнечный день</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>Cloudy</td>
+<td>Облачная погода</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Office</td>
+<td>Флуоресцентное освещение</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Home</td>
+<td>Лампы накаливания</td>
+</tr>
+</tbody>
+</table>
+<h2 id="коррекция-изображения">🔍 Коррекция изображения</h2>
+<h3 id="bpc-black-pixel-correction">BPC (Black Pixel Correction)</h3>
+<p>Коррекция черных пикселей (битые пиксели).</p>
+<ul>
+<li><code>0</code>: Выключено ✅</li>
+<li><code>1</code>: Включено</li>
+</ul>
+<h3 id="wpc-white-pixel-correction">WPC (White Pixel Correction)</h3>
+<p>Коррекция белых пикселей (битые пиксели).</p>
+<ul>
+<li><code>0</code>: Выключено</li>
+<li><code>1</code>: Включено ✅</li>
+</ul>
+<h3 id="raw-gma-gamma-correction">Raw GMA (Gamma Correction)</h3>
+<p>Коррекция передачи пикселей для улучшения динамического диапазона.</p>
+<ul>
+<li><code>0</code>: Выключено («сырое» изображение)</li>
+<li><code>1</code>: Включено ✅</li>
+</ul>
+<h3 id="lens-correction-lenc">Lens Correction (LENC)</h3>
+<p>Коррекция искажений линзы.</p>
+<ul>
+<li><code>0</code>: Выключено</li>
+<li><code>1</code>: Включено ✅</li>
+</ul>
+<h2 id="геометрические-преобразования">🔄 Геометрические преобразования</h2>
+<h3 id="horizontal-mirror-горизонтальное-зеркало">Horizontal Mirror (Горизонтальное зеркало)</h3>
+<p>Отражает изображение по горизонтали.</p>
+<ul>
+<li><code>0</code>: Нормальное ✅</li>
+<li><code>1</code>: Отраженное</li>
+</ul>
+<p><strong>Использование:</strong> Настройте в зависимости от монтажа камеры.</p>
+<h3 id="vertical-flip-вертикальное-отражение">Vertical Flip (Вертикальное отражение)</h3>
+<p>Переворачивает изображение вверх ногами.</p>
+<ul>
+<li><code>0</code>: Нормальное ✅</li>
+<li><code>1</code>: Перевернутое</li>
+</ul>
+<p><strong>Использование:</strong> Настройте в зависимости от монтажа камеры.</p>
+<h2 id="оптимальные-конфигурации">🏆 Оптимальные конфигурации</h2>
+<h3 id="конфигурация-1-максимальная-скорость">Конфигурация 1: Максимальная скорость</h3>
+<pre><code>Framesize: QVGA (320×240)
+Quality: 20
+Brightness: 0
+Contrast: 1
+Saturation: -2
+Special Effect: Grayscale</code></pre>
+<h3 id="конфигурация-2-сбалансированная-рекомендуется">Конфигурация 2: Сбалансированная (Рекомендуется)</h3>
+<pre><code>Framesize: VGA (640×480)
+Quality: 10
+Brightness: 0
+Contrast: 1
+Saturation: -2
+Special Effect: Grayscale</code></pre>
+<h3 id="конфигурация-3-максимальное-качество">Конфигурация 3: Максимальное качество</h3>
+<pre><code>Framesize: VGA (640×480)
+Quality: 5
+Brightness: 0
+Contrast: 2
+Saturation: -2
+Special Effect: Grayscale</code></pre>
+<h3 id="конфигурация-4-темное-помещение">Конфигурация 4: Темное помещение</h3>
+<pre><code>Framesize: VGA (640×480)
+Quality: 10
+Brightness: 1
+Contrast: 2
+Saturation: -2
+Special Effect: Grayscale</code></pre>
+<p><strong>Использование:</strong> Плохое освещение</p>
+<h3 id="конфигурация-5-яркое-солнце">Конфигурация 5: Яркое солнце</h3>
+<pre><code>Framesize: VGA (640×480)
+Quality: 10
+Brightness: -1
+Contrast: 1
+Saturation: -2
+Special Effect: Grayscale</code></pre>
+<p><strong>Использование:</strong> Прямой солнечный свет</p>
+<h2 id="влияние-параметров-на-производительность">📊 Влияние параметров на производительность</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Параметр</th>
+<th>Представление</th>
+<th>Качество</th>
+<th>Критичность</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Frame Size ↓</td>
+<td>+++++</td>
+<td>–</td>
+<td>Высокая</td>
+</tr>
+<tr class="even">
+<td>Quality ↑</td>
+<td>—</td>
+<td>++</td>
+<td>Высокая</td>
+</tr>
+<tr class="odd">
+<td>Brightness</td>
+<td>Нет</td>
+<td>+</td>
+<td>Средняя</td>
+</tr>
+<tr class="even">
+<td>Contrast</td>
+<td>Нет</td>
+<td>++</td>
+<td>Высокая</td>
+</tr>
+<tr class="odd">
+<td>Saturation</td>
+<td>Нет</td>
+<td>++</td>
+<td>Высокая</td>
+</tr>
+<tr class="even">
+<td>Special Effect</td>
+<td>+</td>
+<td>+++</td>
+<td>Критическая</td>
+</tr>
+<tr class="odd">
+<td>Sharpness</td>
+<td>Нет</td>
+<td>+</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Легенда:</strong> - <code>+</code> положительное влияние - <code>-</code> отрицательное влияние - Количество знаков = сила влияния</p>
+<h2 id="советы-по-настройке">💡 Советы по настройке</h2>
+<ol type="1">
+<li><strong>Начните с предустановок</strong> - выберите ближайшую установку значения</li>
+<li><strong>Измените одно за раз</strong> - так легче понять влияние</li>
+<li><strong>Тестируйте на реальном просмотре</strong> - условия в лаборатории могут отличаться</li>
+<li><strong>Записывайте настройки</strong> - сохраните удачные конфигурации</li>
+</ol>
+<h2 id="диагностика-проблем">🔬 Диагностика проблем</h2>
+<h3 id="проблема-слишком-темно">Проблема: Слишком темно</h3>
+<ul>
+<li>Увеличьте Brightness (+1 или +2)</li>
+</ul>
+<h3 id="проблема-слишком-светло">Проблема: Слишком светло</h3>
+<ul>
+<li>Уменьшите Brightness (-1 или -2)</li>
+</ul>
+<h3 id="проблема-низкий-контраст-линий">Проблема: Низкий контраст линий</h3>
+<ul>
+<li>Увеличьте Contrast (+1 или +2)</li>
+<li>Убедитесь, что используется Grayscale</li>
+<li>Установите Saturation на -2</li>
+</ul>
+<h2 id="дополнительная-информация">📚 Дополнительная информация</h2>
+<ul>
+<li><a href="https://www.uctronics.com/download/cam_module/OV2640DS.pdf">OV2640 Datasheet</a></li>
+<li><a href="https://github.com/espressif/esp32-camera">ESP32-CAM Reference</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Digital_image_processing">Image Processing Basics</a></li>
+</ul>
+<h2 id="заключение">🎓 Заключение</h2>
+<p>Экспериментируйте и найдите свой идеальный баланс! 🚀</p>
+</body>
+</html>
+)=====";
