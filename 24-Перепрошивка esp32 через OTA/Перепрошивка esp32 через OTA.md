@@ -48,11 +48,11 @@
 
 2026.03.05-06 Были изучены два варианта прошивки контроллера ESP32 через WiFi:
 
-### [BasicOTA.ino](https://voltiq.ru/esp8266-ota-updates-with-arduino-ide/)
+### [1. BasicOTA.ino](https://voltiq.ru/esp8266-ota-updates-with-arduino-ide/)
 
 Пример на штатной ArduinoOTA, которая подменяет для перепрошивки последовательный порт на порт локальной сети и загружает код после компиляции по WiFi.
 
-### [EOtaDemo.ino](https://github.com/ayushsharma82/ElegantOTA)
+### [2. EOtaDemo.ino](https://github.com/ayushsharma82/ElegantOTA)
 
 Пример на основе скетча ***Demo*** из ***ElegantOTA v3.1.7*** - оригинальной библиотеки беспроводных обновлений для беспроводных микроконтроллеров, в т.ч. ESP8266, ESP32.
 
@@ -62,7 +62,11 @@ ElegantOTA разработан для того, чтобы сделать пр�
  
 #### [ElegantOTA](https://docs.elegantota.pro)
 
-### [ESP32 OTA Web Updater](https://github.com/mtnbkr88/ESP32OTAWebUpdater/tree/master)
+### [3. ESP-WebOTA Легко добавляйте веб-обновления OTA в свои проекты ESP32/ESP8266](https://github.com/scottchiefbaker/ESP-WebOTA)
+
+2026.03.17 - пример с простыми числами не получился - зависает.
+
+### [4. ESP32 OTA Web Updater](https://github.com/mtnbkr88/ESP32OTAWebUpdater/tree/master)
 
 2026-03-07 Приостановил изучение!
 
