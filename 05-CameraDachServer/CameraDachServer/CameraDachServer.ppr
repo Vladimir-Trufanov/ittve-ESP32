@@ -45,11 +45,11 @@ Selected=camera_index.h
 TopLine=840
 Caret=1,864
 [camera_index.h]
-TopLine=151
-Caret=55,608
+TopLine=139
+Caret=39,155
 [CameraDachServer.ino]
 TopLine=107
 Caret=1,113
 [html\camera_index_v4.html]
-TopLine=979
-Caret=1,1019
+TopLine=959
+Caret=1,998
