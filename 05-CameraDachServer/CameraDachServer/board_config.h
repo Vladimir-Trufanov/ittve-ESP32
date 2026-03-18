@@ -8,10 +8,10 @@
 **/
 
 #pragma once
-
 // "DachaSad"              - камера для съёмок на природе
+// #define soft_ap_ssid "DachaSad"
 // "Proba3" = "ESP_75C391" - камера на 3-ем контроллере
-#define soft_ap_ssid "DachaSad"
+#define soft_ap_ssid "Proba3" 
 
 // WARNING !!! 
 // Изображения будут переданы частично, если размер изображения превысит размер буфера.

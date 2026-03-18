@@ -379,11 +379,11 @@ th{font-size:.9rem;}
       
       <table>
       <thead>   
-        <tr> <th class="tnet"> Сеть         </th> <th class="tcam"> Видеокамера          </th> </tr> 
+        <tr> <th class="tnet"> Сеть </th> <th class="tcam"> Видеокамера </th> </tr> 
       </thead>
       <tbody> 
-        <tr> <td class="tnet"> DachaSad     </td> <td class="tcam"> <a href="http://192.168.4.1">   http://192.168.4.1   </a></td> </tr> 
-        <tr> <td class="tnet"> TP-Link_B394 </td> <td class="tcam"> <a href="http://192.168.0.104"> http://192.168.0.104 </a></td> </tr> 
+        <tr> <td class="tnet" id="soft_ap_ssid"> DachaSad     </td> <td class="tcam" id="hsoftAPIP">  http://192.168.4.1   </a></td> </tr> 
+        <tr> <td class="tnet" id="hssid">        OPPO A9 2020 </td> <td class="tcam" id="hlocalIP">   http://192.168.0.104 </a></td> </tr> 
       </tbody>
       </table>
       
@@ -573,14 +573,10 @@ th{font-size:.9rem;}
 <script>
 document.addEventListener('DOMContentLoaded', function (event) 
 {
-  console.log("Информация по главной странице сервера");
-  var myLocal = document.location;
-  console.log("Полный URL страницы:   "+myLocal.href);
-  console.log("Доменное имя и порт:   "+myLocal.host);
-
+  // Определяем базовый адрес для страниц
   var baseHost = document.location.origin
-  var streamUrl = baseHost + ':81'
-  console.log("baseHost:"+baseHost);
+  var myLocal = document.location;
+  console.log("Главная страница сервера: "+myLocal.href);
 
   // ---
   // Оттрасстировать запрос на сервер
@@ -765,7 +761,7 @@ document.addEventListener('DOMContentLoaded', function (event)
   // ---
   const updateValue = (el, value, updateRemote) => 
   {
-    // Меняем умалчиваемое значение updateRemote="true" на заданное (как правило ""false")
+    // Меняем умалчиваемое значение updateRemote="true" на заданное (как правило "false")
     updateRemote = updateRemote == null ? true : updateRemote;
     let initialValue;
     // Для элементов, типа checkbox меняем на противоположное
@@ -778,8 +774,9 @@ document.addEventListener('DOMContentLoaded', function (event)
     // Для остальных меняем на заданное
     else 
     {
-      initialValue = el.value
-      el.value = value
+      initialValue = el.value;
+      el.value = value;
+      // console.log("el:",el,"value =",value);
     }
     // Если поступила команда на обновление значений в памяти через страницу
     // сервера "/control" (updateRemote=true), то делаем это
@@ -836,19 +833,16 @@ document.addEventListener('DOMContentLoaded', function (event)
   fetch(`${baseHost}/status`)
   .then(function (response) 
   {
-    console.log("Параметры потока изображений: ");
+    // console.log("Параметры потока изображений: ");
     return response.json();
   })
   .then(function (state) 
   {
-    //  if (el.id=="soft_ap_ssid")
-    //  {
-    //    elConsole(el,el.id,state[el.id])
-    elConsole(1,"hssid",        state["hssid"])
-    elConsole(2,"hlocalIP",     state["hlocalIP"])
-    elConsole(3,"soft_ap_ssid", state["soft_ap_ssid"])
-    elConsole(4,"hsoftAPIP",    state["hsoftAPIP"])
-    //  }
+    // Обновляем информацию по сетям
+    document.querySelector('#hssid').textContent        = state["hssid"];
+    document.querySelector('#hlocalIP').textContent     = state["hlocalIP"];
+    document.querySelector('#soft_ap_ssid').textContent = state["soft_ap_ssid"];
+    document.querySelector('#hsoftAPIP').textContent    = state["hsoftAPIP"];
     // Перебираем html-строки класса "default-action"
     document
     .querySelectorAll('.default-action')
@@ -859,11 +853,10 @@ document.addEventListener('DOMContentLoaded', function (event)
     // так как только-что значения выбрали)
     .forEach(el => 
     {
-      // elConsole(el,el.id,state[el.id]);
       // Трассируем параметры по освещенности
       if ((el.id=="agc")||(el.id=="agc_gain")||(el.id=="gainceiling"))
       {
-        elConsole(el,el.id,state[el.id])
+        //elConsole(el,el.id,state[el.id])
       }
       updateValue(el, state[el.id], false);
     })
