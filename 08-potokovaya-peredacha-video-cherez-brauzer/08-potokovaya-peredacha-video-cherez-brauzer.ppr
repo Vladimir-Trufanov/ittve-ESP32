@@ -35,5 +35,5 @@ Extensions=*.*
 Main=
 Selected=StreamESP32CAM\StreamESP32CAM.ino
 [StreamESP32CAM\StreamESP32CAM.ino]
-TopLine=142
+TopLine=189
 Caret=1,142

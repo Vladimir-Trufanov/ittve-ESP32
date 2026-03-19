@@ -23,6 +23,8 @@
 
 #include "help.page"
 
+
+
 // Параметры локальной и собственной сети контроллера для передачи в html
 char hssid[12];     // не более 11 символов, латиница
 char hlocalIP[18];
@@ -33,9 +35,22 @@ char hsoftAPIP[18];
 // ****************************************************************************
 void InitWiFi(const char* ssid, const char* password)
 {
-  WiFi.mode(WIFI_MODE_APSTA);
-  char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
-  WiFi.softAP(soft_apssid, soft_apssid);
+  //WiFi.mode(WIFI_MODE_APSTA);
+  //char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
+  //WiFi.softAP(soft_apssid, soft_apssid);
+  
+  
+  //ESP32 As access point IP: 192.168.4.1
+  WiFi.mode(WIFI_AP); //Access Point mode
+  WiFi.softAP("ESPWebServer", "12345678");    //Password length minimum 8 char
+
+  //Comment below code if you are using Access point only
+  //ESP32 connects to your wifi -----------------------------------
+  WiFi.mode(WIFI_STA); //Connectto your wifi
+  //WiFi.begin(ssid, password);
+
+  
+   
   // Подключаемся к WiFi
   WiFi.begin(ssid, password);
   WiFi.setSleep(false);
