@@ -1,9 +1,9 @@
 /** Arduino, ESP32, C/C++ ************************************** ChipWiFi.h ***
  * 
- *                        Обеспечить сканирование и ведение локальной сети WiFi
- *                                               и собственной сети контроллера 
+ *                          Обеспечить сканирование сетей WiFi, выбор и ведение 
+ *                           локальной сети WiFi и собственной сети контроллера 
  *                                                     
- * v1.0.1, 20.03.2026                                 Автор:      Труфанов В.Е.
+ * v1.0.2, 20.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 18.03.2026
 **/
 
@@ -12,19 +12,16 @@
 #include "WiFi.h"
 
 // Определяем SSID собственной сети контроллера
-// "DachaSad"    - камера для съёмок на природе
-// "ESP_75C391"  - ESP32-CAM, контроллер №3
-// "ESP_A7E119"  - ESP32-CAM, контроллер №6 ["NaDorogu"]
-#define soft_ap_ssid "DachaSad" 
-
-// Указываем учетные данные сетей WiFi, которые может использовать контроллер
-const char* sarr[] =
+#ifndef soft_ap_ssid
+  #define soft_ap_ssid "Esp-DachaSad" 
+#endif
+// Формируем данные массива учетных записей возможных локальных сетей
+int enarr = 6;         // число элементов в массиве
+const char* esarr[] =  // массив учетных данных
 {
-  "TP-Link_B394",  "18009217",
-  "tve-DESKTOP",   "Ue18-647",
+  "tve-DESKTOP",   "Ue14-328",
   "OPPO A9 2020",  "b277a4ee84e8",
-  "tve-MONOBLOCK", "Ue18-647",
-  "linksystve",    "X93K6KQ6WF"
+  "tve-MONOBLOCK", "Ue17-647",
 };
 
 // Резервируем параметры для выбираемой сети
@@ -33,11 +30,11 @@ char epassword[16] = {0};   // пароль
 int eRSSI = -999;           // уровень принимаемого сигнала (дБм - децибел на милливатт) 
 
 // Просканировать, показать сети WiFi в диапазоне и выбрать с большим RSSI 
-bool ViewWiFi(); 
+bool ViewWiFi(const char* sarr[]=esarr, int narr=enarr); 
 // Просканировать сети WiFi в диапазоне по списку и выбрать подходящую для подключения 
-bool ScanWiFi(); 
+bool ScanWiFi(const char* sarr[], int narr); 
 // Проверить соответствие заданному ssid одной из сетей WiFi и выбрать сеть для подключения 
-bool findWiFi(const char* ssid, int iRSSI);
+bool findWiFi(const char* ssid, int iRSSI, const char* sarr[], int narr);
 // Инициировать работу контроллера, как станции WiFi и с собственной сетью
 void InitWiFi(const char* ssid, const char* password);
 
@@ -47,10 +44,10 @@ void InitWiFi(const char* ssid, const char* password);
 // *        [essid,epassword], если уровень сигнала превышает ранее           *
 // *                    зафиксированный уровень другой сети                   *
 // ****************************************************************************
-bool findWiFi(const char* ssid, int iRSSI) 
+bool findWiFi(const char* ssid, int iRSSI, const char* sarr[], int narr) 
 {
   bool result=false;
-  for (int i = 0; i < 9; i=i+2) 
+  for (int i = 0; i < narr; i=i+2) 
   {
     //Serial.print("Смотри: "); Serial.print(iRSSI); Serial.print(" "); Serial.print(sarr[i]); Serial.print(" => ");  Serial.println(sarr[i+1]);
     int res = strcmp(sarr[i], ssid);
@@ -86,7 +83,7 @@ void SerialDefis()
 {
   Serial.println("--------------------------------------------------------------");
 }
-bool ScanWiFi() 
+bool ScanWiFi(const char* sarr[], int narr) 
 {
   // Отмечаем, что подходящая сеть ещё не найдена
   bool isnetwifi=false;
@@ -127,7 +124,7 @@ bool ScanWiFi()
       }
       Serial.println();
       // Отмечаем, если выбрана подходящая сеть
-      bool isWiFi=findWiFi(WiFi.SSID(i).c_str(), WiFi.RSSI(i));
+      bool isWiFi=findWiFi(WiFi.SSID(i).c_str(),WiFi.RSSI(i),sarr,narr);
       if (isWiFi) 
       {
         Serial.print("Можно подключиться: ");
@@ -145,9 +142,16 @@ bool ScanWiFi()
 // ****************************************************************************
 // *  Просканировать, показать сети WiFi в диапазоне и выбрать с большим RSSI *
 // ****************************************************************************
-bool ViewWiFi() 
+bool ViewWiFi(const char* sarr[], int narr)
 {
   bool iswifiview;
+  // Трассируем итоговый массив учетных записей возможных локальных сетей
+  /*
+  for (int i = 0; i < narr; ++i) 
+  {
+   Serial.println(sarr[i]);
+  }
+  */
   // Переводим Wi-Fi в режим станции и отключаемся от точки доступа, если она была подключена
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
@@ -161,7 +165,7 @@ bool ViewWiFi()
   #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 4, 2)
     WiFi.setBandMode(WIFI_BAND_MODE_AUTO);
   #endif
-  iswifiview=ScanWiFi();
+  iswifiview=ScanWiFi(sarr,narr);
   // Для поздних версий ESP_IDF с поддержкой 5G вначале выбираем диапазон 2.4 Ghz 
   #if CONFIG_SOC_WIFI_SUPPORT_5G
     delay(1000);
@@ -169,14 +173,14 @@ bool ViewWiFi()
     Serial.println("Отсканированные сети в диапазоне WiFi 2,4 ГГц:");
     SerialDefis();
     WiFi.setBandMode(WIFI_BAND_MODE_2G_ONLY);
-    iswifiview=ScanWiFi();
+    iswifiview=ScanWiFi(sarr,narr);
     delay(1000);
     // Затем выбираем диапазон 5 Ghz 
     SerialDefis();
     Serial.println("Отсканированные сети в диапазоне WiFi 5 ГГц");
     SerialDefis();
     WiFi.setBandMode(WIFI_BAND_MODE_5G_ONLY);
-    iswifiview=ScanWiFi();
+    iswifiview=ScanWiFi(sarr,narr);
   #endif
   //if (iswifiview) Serial.println("Точно сеть найдена!");
   //else Serial.println("Точно сеть НЕ найдена!");

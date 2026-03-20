@@ -4,16 +4,19 @@
  *  E.g. the return value of `encryptionType()` different because more modern encryption is supported.
  */
 #include "WiFi.h"
-#include "ChipWiFi.h"
 #include "trass.h"
+
+// Определяем параметры сетей и подключаем библиотеку 
+// ведения локальной и собственной сети WiFi 
+#include "DefWiFi.h"
 
 void setup() 
 {
   Serial.begin(115200);
   delay(5000);
   
-  saymem("До ViewWiFi"); 
-  bool isWiFi=ViewWiFi();
+  saymem("До ViewWiFi");
+  bool isWiFi=ViewWiFi(sarr,narr);
   if (isWiFi) 
   {
     Serial.print("Будем подключать сеть: ");
@@ -22,7 +25,7 @@ void setup()
   else Serial.println("Ошибка, сеть НЕ найдена!");
   saymem("До InitWiFi"); 
   InitWiFi(essid,epassword);
-  saymem("В конце Setup"); 
+  saymem("В конце Setup");
 }
 
 void loop() 
