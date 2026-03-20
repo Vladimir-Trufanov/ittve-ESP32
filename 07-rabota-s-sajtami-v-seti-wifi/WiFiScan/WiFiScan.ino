@@ -16,16 +16,13 @@ void setup()
   bool isWiFi=ViewWiFi();
   if (isWiFi) 
   {
-    Serial.println("Будем подключать сеть!");
+    Serial.print("Будем подключать сеть: ");
     Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
   }
-  else Serial.println("Ошибка, точно сеть НЕ найдена!");
-
-
+  else Serial.println("Ошибка, сеть НЕ найдена!");
   saymem("До InitWiFi"); 
-  InitWiFi("TP-Link_B394", "18009217");
+  InitWiFi(essid,epassword);
   saymem("В конце Setup"); 
-  Serial.println("Setup done2");
 }
 
 void loop() 
