@@ -5,49 +5,30 @@
  */
 #include "WiFi.h"
 #include "ChipWiFi.h"
+#include "trass.h"
 
 void setup() 
 {
   Serial.begin(115200);
   delay(5000);
   
-  ViewWiFi();
+  saymem("До ViewWiFi"); 
+  bool isWiFi=ViewWiFi();
+  if (isWiFi) 
+  {
+    Serial.println("Будем подключать сеть!");
+    Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
+  }
+  else Serial.println("Ошибка, точно сеть НЕ найдена!");
+
+
+  saymem("До InitWiFi"); 
   InitWiFi("TP-Link_B394", "18009217");
-
-
-   Serial.println("Setup done2");
-
-
+  saymem("В конце Setup"); 
+  Serial.println("Setup done2");
 }
 
 void loop() 
 {
-
-  /*
-  Serial.println("-------------------------------------");
-  Serial.println("Default wifi band mode scan:");
-  Serial.println("-------------------------------------");
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 4, 2)
-  WiFi.setBandMode(WIFI_BAND_MODE_AUTO);
-#endif
-  ScanWiFi();
-#if CONFIG_SOC_WIFI_SUPPORT_5G
-  // Wait a bit before scanning again.
-  delay(1000);
-  Serial.println("-------------------------------------");
-  Serial.println("2.4 Ghz wifi band mode scan:");
-  Serial.println("-------------------------------------");
-  WiFi.setBandMode(WIFI_BAND_MODE_2G_ONLY);
-  ScanWiFi();
-  // Wait a bit before scanning again.
-  delay(1000);
-  Serial.println("-------------------------------------");
-  Serial.println("5 Ghz wifi band mode scan:");
-  Serial.println("-------------------------------------");
-  WiFi.setBandMode(WIFI_BAND_MODE_5G_ONLY);
-  ScanWiFi();
-#endif
-  // Wait a bit before scanning again.
-  */
-  delay(10000);
+  delay(100);
 }

@@ -16,20 +16,22 @@
 // "ESP_A7E119"  - ESP32-CAM, контроллер №6 ["NaDorogu"]
 #define soft_ap_ssid "NaDorogu" 
 
-// Резервируем параметры для выбираемой сети
+//char* essid="1234567890123456"; 
 char essid[16] = {0};
 char epassword[16] = {0};
-int eRSSI = -999;
+//char* epassword="1234567890123456";
 
-bool ScanWiFi(); 
-bool findWiFi(const char* ssid, int iRSSI);
+char buf[10] = {0};                  // буфер размером меньше строки, инициализированный нулями
+
+
+void ScanWiFi(); 
+bool findWiFi(const char* ssid);
 
 // ****************************************************************************
-// *  Просканировать, показать сети WiFi в диапазоне и выбрать с большим RSSI *
+// *              Просканировать и показать сети WiFi в диапазоне             *
 // ****************************************************************************
-bool ViewWiFi() 
+void ViewWiFi() 
 {
-  bool iswifiview;
   // Переводим Wi-Fi в режим станции и отключаемся от точки доступа, если она была подключена
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
@@ -43,7 +45,7 @@ bool ViewWiFi()
   #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 4, 2)
     WiFi.setBandMode(WIFI_BAND_MODE_AUTO);
   #endif
-  iswifiview=ScanWiFi();
+  ScanWiFi();
   // Для поздних версий ESP_IDF с поддержкой 5G вначале выбираем диапазон 2.4 Ghz 
   #if CONFIG_SOC_WIFI_SUPPORT_5G
     delay(1000);
@@ -51,26 +53,21 @@ bool ViewWiFi()
     Serial.println("Отсканированные сети в диапазоне WiFi 2,4 ГГц:");
     Serial.println("-------------------------------------");
     WiFi.setBandMode(WIFI_BAND_MODE_2G_ONLY);
-    iswifiview=ScanWiFi();
+    ScanWiFi();
     delay(1000);
     // Затем выбираем диапазон 5 Ghz 
     Serial.println("-------------------------------------");
     Serial.println("Отсканированные сети в диапазоне WiFi 5 ГГц");
     Serial.println("-------------------------------------");
     WiFi.setBandMode(WIFI_BAND_MODE_5G_ONLY);
-    iswifiview=ScanWiFi();
+    ScanWiFi();
   #endif
-
-  if (iswifiview) Serial.println("Точно сеть найдена!");
-  else Serial.println("Точно сеть НЕЕЕ найдена!");
-  return iswifiview;
 }
 // ****************************************************************************
-// *                    Просканировать сети WiFi в диапазоне и найти подходящую по списку                 *
+// *                    Просканировать сети WiFi в диапазоне                  *
 // ****************************************************************************
-bool ScanWiFi() 
+void ScanWiFi() 
 {
-  bool isnetwifi=false;
   Serial.println("Scan start");
   // WiFi.scanNetworks will return the number of networks found.
   int n = WiFi.scanNetworks();
@@ -108,27 +105,43 @@ bool ScanWiFi()
         default:                        Serial.print("unknown");
       }
       Serial.println();
-      bool isWiFi=findWiFi(WiFi.SSID(i).c_str(), WiFi.RSSI(i));
+      bool isWiFi=findWiFi(WiFi.SSID(i).c_str());
       if (isWiFi) 
       {
-        //eRSSI=WiFi.RSSI(i);
         Serial.println("Сеть найдена!");
-        Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
-        isnetwifi=true;
+        Serial.print(essid); Serial.print(" => ");  Serial.println(epassword);
       }
       delay(10);
     }
   }
+
   // Delete the scan result to free memory for code below.
   WiFi.scanDelete();
   Serial.println("-------------------------------------");
-  return isnetwifi;
 }
+
+
+int fmain()
+{
+   char *str = "sample string";
+   //buf='\0\0\0\0\0\0\0\0\0\0';                  // буфер размером меньше строки, инициализированный нулями
+   buf[10]={0};                  // буфер размером меньше строки, инициализированный нулями
+
+   printf("строка: \"%s\"\n\n", str);
+   printf("буфер перед копированием: \"%s\"\n", buf);
+
+   strncpy(buf, str, sizeof(buf) - 1);   // len на 1 меньше размера буфера
+
+   printf("буфер после копирования:  \"%s\"\n", buf);
+
+   return 0;
+}
+
 
 // ****************************************************************************
 // *              ------ Показать состояние памяти с заданным префиксом              *
 // ****************************************************************************
-bool findWiFi(const char* ssid, int iRSSI) 
+bool findWiFi(const char* ssid) 
 {
   bool result=false;
   // Указываем учетные данные Wi-Fi
@@ -138,43 +151,71 @@ bool findWiFi(const char* ssid, int iRSSI)
   //const char* password = "18009217";
   const char* sarr[] =
   {
-    "TP-Link_B394",  "18009217",
-    "tve-DESKTOP",   "Ue18-647",
-    "OPPO A9 2020",  "b277a4ee84e8",
-    "tve-MONOBLOCK", "Ue18-647",
-    "linksystve",    "X93K6KQ6WF"
+    "OPPO A9 2020", "b277a4ee84e8",
+    "TP-Link_B394", "18009217",
+    "tve-DESKTOP",  "Ue18-647",
+    "linksystve",   "X93K6KQ6WF"
   };
-  for (int i = 0; i < 9; i=i+2) 
+  for (int i = 0; i < 7; i=i+2) 
   {
-    Serial.print("Смотри: "); Serial.print(iRSSI); Serial.print(" "); Serial.print(sarr[i]); Serial.print(" => ");  Serial.println(sarr[i+1]);
+    size_t sizet;
     int res = strcmp(sarr[i], ssid);
     if (res == 0) 
     {
-      Serial.print("Совпал: "); Serial.print(iRSSI); Serial.print(" "); Serial.print(sarr[i]); Serial.print(" => ");  Serial.println(sarr[i+1]);
-      if (((strlen(sarr[i]))<16) || ((strlen(sarr[i]))<16))
+      Serial.print(sarr[i]); Serial.print(" => ");  Serial.println(sarr[i+1]);
+      sizet=strlen(sarr[i]);
+      if (sizet<16)
       {
-        Serial.print("Годен:  "); Serial.print(iRSSI); Serial.print(" "); Serial.print(sarr[i]); Serial.print(" => ");  Serial.println(sarr[i+1]);
-        Serial.print("Было:   "); Serial.print(eRSSI); Serial.print(" "); Serial.print(essid);   Serial.print(" => ");  Serial.println(epassword);
-        if (iRSSI>eRSSI)
+        essid[16] = {0};
+        strncpy(essid, sarr[i], sizeof(essid) - 1);   // len на 1 меньше размера буфера
+        Serial.print(essid); Serial.print(" 0=> ");  Serial.println(epassword);
+        sizet=strlen(sarr[i+1]);
+        if (sizet<16)
         {
-          // essid[16] = {0};
-          // Serial.print(essid); Serial.print(" 0=> ");  Serial.println(epassword);
-          strncpy(essid, sarr[i], sizeof(essid) - 1); 
-          // Serial.print(essid); Serial.print(" 1=> ");  Serial.println(epassword);
-          // epassword[16] = {0};
+          Serial.print(essid); Serial.print(" a=> ");  Serial.println(epassword);
+          epassword[16] = {0};
+          Serial.print(essid); Serial.print(" b=> ");  Serial.println(epassword);
           strncpy(epassword, sarr[i+1], sizeof(epassword) - 1);   // len на 1 меньше размера буфера
-          eRSSI=iRSSI;
-          // Serial.print(essid); Serial.print(" 2=> ");  Serial.println(epassword);
-          Serial.print("Стало:  "); Serial.print(eRSSI); Serial.print(" "); Serial.print(essid);   Serial.print(" => ");  Serial.println(epassword);
+          Serial.print(essid); Serial.print(" 1=> ");  Serial.println(epassword);
           result=true;
           break;
         }
       }
+
+
+
+      /*
+      essid[16] = {0};
+      strncpy(essid, sarr[i], sizeof(essid) - 1);   // len на 1 меньше размера буфера
+      */
+      //fmain();
+
+      //strncpy(cessid,сpr,9);
+     /*
+      sizet=strlen(sarr[i]);
+      if (sizet<16)
+      {
+        //essid = sarr[i];
+        memset(essid,'\0',16); 
+        strncpy(essid,sarr[i],15);
+        sizet=strlen(sarr[i+1]);
+        if (sizet<16)
+        {
+          // epassword = sarr[i+1];
+          memset(epassword,'\0',16); 
+          strncpy(epassword,sarr[i+1],15);
+          //Serial.print(sarr[i]); Serial.print(" => ");  Serial.println(sarr[i+1]);
+          //*/
+          //result=true;
+          //break;
+        //}
+      //}
     }
   }
-  //Serial.print(essid); Serial.print(" 3=> ");  Serial.println(epassword);
   return result; 
 }
+
+
 // ****************************************************************************
 // *   Инициируем работу контроллера, как станции WiFi и с собственной сетью  *
 // ****************************************************************************
@@ -206,6 +247,45 @@ void InitWiFi(const char* ssid, const char* password)
   Serial.print("IP рабочей станции:  ");  Serial.print(WiFi.localIP());  Serial.print("  "); Serial.println(ssid);
 
 
+
+
+
+
+
+  /*
+  //WiFi.mode(WIFI_MODE_APSTA);
+  //char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
+  //WiFi.softAP(soft_apssid, soft_apssid);
+  
+  
+  //ESP32 As access point IP: 192.168.4.1
+  WiFi.mode(WIFI_AP); //Access Point mode
+  WiFi.softAP("ESPWebServer", "12345678");    //Password length minimum 8 char
+
+  //Comment below code if you are using Access point only
+  //ESP32 connects to your wifi -----------------------------------
+  WiFi.mode(WIFI_STA); //Connectto your wifi
+  //WiFi.begin(ssid, password);
+
+  
+   
+  // Подключаемся к WiFi
+  WiFi.begin(ssid, password);
+  WiFi.setSleep(false);
+  Serial.print("Подключение к WiFi");
+  while (WiFi.status() != WL_CONNECTED) 
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi подключен");
+  // Заполняем параметры для передачи в html через status_handler 
+  // [Вывод IPAddress в HTML](https://arduino.ru/forum/programmirovanie/vyvod-ipaddress-v-html)
+  String(ssid).toCharArray(hssid,String(ssid).length()+1); 
+  String ipaddr=WiFi.localIP().toString(); ipaddr.toCharArray(hlocalIP,ipaddr.length()+1); 
+  ipaddr=WiFi.softAPIP().toString(); ipaddr.toCharArray(hsoftAPIP,ipaddr.length()+1); 
+  */
 }
 
 
