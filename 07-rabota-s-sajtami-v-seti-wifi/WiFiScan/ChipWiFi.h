@@ -29,6 +29,9 @@ char essid[16] = {0};       // идентификатор беспроводно
 char epassword[16] = {0};   // пароль
 int eRSSI = -999;           // уровень принимаемого сигнала (дБм - децибел на милливатт) 
 
+void CheckWiFiStatus(); 
+
+
 // Просканировать, показать сети WiFi в диапазоне и выбрать с большим RSSI 
 bool ViewWiFi(const char* sarr[]=esarr, int narr=enarr); 
 // Просканировать сети WiFi в диапазоне по списку и выбрать подходящую для подключения 
@@ -152,9 +155,67 @@ bool ViewWiFi(const char* sarr[], int narr)
    Serial.println(sarr[i]);
   }
   */
+
+  /*
+  При вызове функции WiFi.mode(WIFI_STA) в Arduino с модулем ESP32 могут возникать ошибки из-за проблем 
+  с подключением к точке доступа Wi-Fi или сбоев в работе драйвера WiFi. Для обработки ошибок рекомендуется 
+  использовать обработчики событий и учитывать причины их возникновения. 
+    Некоторые возможные причины ошибок:
+  - неудачная попытка подключения к точке доступа. Например, ESP32 не может найти имя сети (SSID) или подключиться к ней;
+  - разрыв соединения Wi-Fi, из-за чего возникает событие WIFI_EVENT_STA_DISCONNECTED;
+  - принудительный вызов функции esp_wifi_disconnect — в этом случае приложение не должно вызывать 
+  esp_wifi_connect() для повторного переподключения;
+  - временные проблемы с подключением, например, из-за слабого уровня сигнала или высокого уровня помех. 
+    Некоторые методы обработки ошибок:
+  - мониторинг статуса подключения с помощью функции WiFi.status. Она возвращает целое число, 
+  соответствующее текущему статусу соединения. Например, WL_NO_SSID_AVAIL означает, что ESP32 
+  не может найти имя сети, WL_CONNECT_FAILED — что ESP32 не может подключиться к назначенной сети;
+  - обработка события WIFI_EVENT_STA_DISCONNECTED. В обработчике можно вызвать esp_wifi_connect() 
+  для попытки повторного подключения. Однако если событие возникает из-за принудительного вызова 
+  esp_wifi_disconnect(), приложение не должно вызывать esp_wifi_connect();
+  - ограничение количества попыток переподключения. Если количество неудачных попыток превысило 
+  лимит (например, CONFIG_WIFI_RESTART_ATTEMPTS по умолчанию), нужно выйти из бесконечного цикла 
+  переподключений и попробовать что-то ещё;
+  - использование группы событий для хранения текущего состояния подключения. При получении события 
+  WIFI_EVENT в обработчике можно устанавливать заранее определённый бит (флаг) в группе. Тогда 
+  любая задача сможет в любой момент времени проверить, есть ли подключение к точке доступа 
+  или его нет;
+  - перезапуск ESP32 — если ESP32 временно не подключается к Wi-Fi по неизвестным причинам, 
+  можно добавить тайм-аут и использовать функцию ESP.restart для перезапуска ESP32 из кода.
+    Важно: бесконечный цикл подключения к одной и той же точке доступа не всегда идеален — например, 
+  если внезапно роутер вышел из строя. Поэтому в реальных сценариях стоит предпринять какие-то 
+  специальные меры в случае неудачи, например, попробовать подключиться к резервной сети. 
+
+  [Wi-Fi API](https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html)
+  */
+
+  /*
   // Переводим Wi-Fi в режим станции и отключаемся от точки доступа, если она была подключена
-  WiFi.mode(WIFI_STA);
+  iswifiview=WiFi.mode(WIFI_STA);
+  if (iswifiview) 
+  {
+    Serial.println("Ошибка WiFi.mode(WIFI_STA)"); 
+    CheckWiFiStatus();
+  } 
+  else 
+  Serial.println("Хорошо!");
+
+  if (WiFi.status()==WL_DISCONNECTED)
+  {
+    WiFi.reconnect();
+    delay(500);
+    iswifiview=WiFi.mode(WIFI_STA);
+  }
   WiFi.disconnect();
+  */
+
+  // новый диалог
+  if (WiFi.status()!=WL_DISCONNECTED)
+  {
+    WiFi.mode(WIFI_STA);  
+    WiFi.disconnect();
+  }
+
   // Ждем немного перед сканированием
   delay(1000);
   // Для ранних версий ESP_IDF не выделяем отдельных диапазонов
@@ -210,6 +271,33 @@ void InitWiFi(const char* ssid, const char* password)
   Serial.println("WiFi подключен");
   Serial.print("IP собственной сети: ");  Serial.print(WiFi.softAPIP()); Serial.print("  "); Serial.println(soft_ap_ssid);
   Serial.print("IP рабочей станции:  ");  Serial.print(WiFi.localIP());  Serial.print("  "); Serial.println(ssid);
+}
+
+
+void CheckWiFiStatus() 
+{
+    // Check WiFi status
+    int wifiStatus = WiFi.status();
+    switch (wifiStatus) {
+        case WL_CONNECTED:
+            Serial.println("WiFi is connected.");
+            break;
+        case WL_NO_SSID_AVAIL:
+            Serial.println("No SSID available.");
+            break;
+        case WL_CONNECT_FAILED:
+            Serial.println("WiFi connection failed.");
+            break;
+        case WL_IDLE_STATUS:
+            Serial.println("WiFi is idle.");
+            break;
+        case WL_DISCONNECTED:
+            Serial.println("WiFi is disconnected.");
+            break;
+        default:
+            Serial.println("Unknown WiFi status.");
+            break;
+    }
 }
 
 // ************************************************************* ChipWiFi.h ***

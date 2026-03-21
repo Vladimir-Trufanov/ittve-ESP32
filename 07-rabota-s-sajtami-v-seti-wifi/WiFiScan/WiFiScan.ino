@@ -26,6 +26,30 @@ void setup()
   saymem("До InitWiFi"); 
   InitWiFi(essid,epassword);
   saymem("В конце Setup");
+
+  saymem("2 До ViewWiFi");
+  isWiFi=ViewWiFi(sarr,narr);
+  if (isWiFi) 
+  {
+    Serial.print("Будем подключать сеть: ");
+    Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
+  }
+  else Serial.println("Ошибка, сеть НЕ найдена!");
+  saymem("2 До InitWiFi"); 
+  InitWiFi(essid,epassword);
+  saymem("В конце Setup");
+
+  saymem("3 До ViewWiFi");
+  isWiFi=ViewWiFi(sarr,narr);
+  if (isWiFi) 
+  {
+    Serial.print("Будем подключать сеть: ");
+    Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
+  }
+  else Serial.println("Ошибка, сеть НЕ найдена!");
+  saymem("3 До InitWiFi"); 
+  InitWiFi(essid,epassword);
+  saymem("В конце Setup");
 }
 
 void loop() 
