@@ -23,7 +23,8 @@ const char* sarr[] =  // массив учетных данных
   "tve-DESKTOP",   "Ue18-647",
   "OPPO A9 2020",  "b277a4ee84e8",
   "tve-MONOBLOCK", "Ue18-647",
-  "linksystve",    "X93K6KQ6WF"
+  "linksystve",    "X93K6KQ6WF",
+  "GoshaIMila",    "t1s2wde4bE"
 };
 
 // Подключаем библиотеку сканирование сетей WiFi, выбор и ведение 

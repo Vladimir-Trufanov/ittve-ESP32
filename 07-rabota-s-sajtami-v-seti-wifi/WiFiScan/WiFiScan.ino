@@ -14,42 +14,27 @@ void setup()
 {
   Serial.begin(115200);
   delay(5000);
-  
-  saymem("До ViewWiFi");
-  bool isWiFi=ViewWiFi(sarr,narr);
-  if (isWiFi) 
-  {
-    Serial.print("Будем подключать сеть: ");
-    Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
-  }
-  else Serial.println("Ошибка, сеть НЕ найдена!");
-  //saymem("До InitWiFi"); 
-  //InitWiFi(essid,epassword);
-  //saymem("В конце Setup");
 
-  saymem("2 До ViewWiFi");
-  isWiFi=ViewWiFi(sarr,narr);
-  if (isWiFi) 
+  bool isWiFi;
+  for (int ii = 0; ii < 10; ii++) 
   {
-    Serial.print("Будем подключать сеть: ");
-    Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
+    Serial.print(ii); Serial.print(": ");
+    saymem("До ViewWiFi");
+    isWiFi=ViewWiFi(sarr,narr);
+    if (isWiFi) 
+    {
+      Serial.print("Будем подключать сеть: ");
+      Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
+    }
+    else Serial.println("Ошибка, сеть НЕ найдена!");
+    Serial.print(ii); Serial.print(": ");
+    saymem("После ViewWiFi");
+    Serial.print(ii); Serial.print(": ");
+    saymem("До InitWiFi");
+    InitWiFi(essid,epassword);
+    Serial.print(ii); Serial.print(": ");
+    saymem("После InitWiFi");
   }
-  else Serial.println("Ошибка, сеть НЕ найдена!");
-  //saymem("2 До InitWiFi"); 
-  //InitWiFi(essid,epassword);
-  //saymem("В конце Setup");
-
-  saymem("3 До ViewWiFi");
-  isWiFi=ViewWiFi(sarr,narr);
-  if (isWiFi) 
-  {
-    Serial.print("Будем подключать сеть: ");
-    Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
-  }
-  else Serial.println("Ошибка, сеть НЕ найдена!");
-  //saymem("3 До InitWiFi"); 
-  //InitWiFi(essid,epassword);
-  //saymem("В конце Setup");
 }
 
 void loop() 

@@ -3,8 +3,11 @@
  *                          Обеспечить сканирование сетей WiFi, выбор и ведение 
  *                           локальной сети WiFi и собственной сети контроллера 
  *                                                     
- * v1.0.2, 20.03.2026                                 Автор:      Труфанов В.Е.
+ * v1.0.3, 22.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 18.03.2026
+ *
+ * 09:27:03.783 -> ESP_IDF_VERSION              = 328961
+ * 09:27:03.783 -> ESP_IDF_VERSION_VAL(5, 4, 2) = 328706
 **/
 
 #pragma once     
@@ -25,12 +28,14 @@ const char* esarr[] =  // массив учетных данных
 };
 
 // Резервируем параметры для выбираемой сети
-char essid[16] = {0};       // идентификатор беспроводной сети
-char epassword[16] = {0};   // пароль
+char essid[34] = {0};       // идентификатор беспроводной сети
+char epassword[34] = {0};   // пароль
 int eRSSI = -999;           // уровень принимаемого сигнала (дБм - децибел на милливатт) 
 
-// Определить статус соединения с WiFi                  
-int CheckWiFiStatus();
+// Проверить и сообщить статус соединения с WiFi                
+wl_status_t CheckWiFiStatus();
+// Проверить и сообщить, какой включен режим работы WiFi  
+WiFiMode_t CheckWiFiMode(); 
 // Просканировать, показать сети WiFi в диапазоне и выбрать с большим RSSI 
 bool ViewWiFi(const char* sarr[]=esarr, int narr=enarr); 
 // Просканировать сети WiFi в диапазоне по списку и выбрать подходящую для подключения 
@@ -94,7 +99,7 @@ bool ScanWiFi(const char* sarr[], int narr)
   //Serial.println("Сканирование завершено");
   if (n == 0) 
   {
-    Serial.println("Сетей не найдено");
+    Serial.println("Сетей для сканирования не найдено");
   } 
   else 
   {
@@ -129,8 +134,8 @@ bool ScanWiFi(const char* sarr[], int narr)
       bool isWiFi=findWiFi(WiFi.SSID(i).c_str(),WiFi.RSSI(i),sarr,narr);
       if (isWiFi) 
       {
-        Serial.print("Можно подключиться: ");
-        Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
+        //Serial.print("Можно подключиться: ");
+        //Serial.print(essid); Serial.print(" => "); Serial.print(epassword); Serial.print(" = ");  Serial.println(eRSSI);
         isnetwifi=true;
       }
       delay(10);
@@ -147,8 +152,6 @@ bool ScanWiFi(const char* sarr[], int narr)
 bool preViewWiFi(const char* sarr[], int narr)
 {
   bool iswifiview=true;
-  // Ждем немного перед сканированием
-  delay(1000);
   // Для ранних версий ESP_IDF не выделяем отдельных диапазонов
   SerialDefis();
   Serial.println("Отсканированные сети Wi-Fi:");
@@ -158,6 +161,7 @@ bool preViewWiFi(const char* sarr[], int narr)
     WiFi.setBandMode(WIFI_BAND_MODE_AUTO);
   #endif
   iswifiview=ScanWiFi(sarr,narr);
+  /*
   // Для поздних версий ESP_IDF с поддержкой 5G вначале выбираем диапазон 2.4 Ghz 
   #if CONFIG_SOC_WIFI_SUPPORT_5G
     delay(1000);
@@ -174,6 +178,7 @@ bool preViewWiFi(const char* sarr[], int narr)
     WiFi.setBandMode(WIFI_BAND_MODE_5G_ONLY);
     iswifiview=ScanWiFi(sarr,narr);
   #endif
+  */
   //if (iswifiview) Serial.println("Точно сеть найдена!");
   //else Serial.println("Точно сеть НЕ найдена!");
   return iswifiview;
@@ -181,6 +186,9 @@ bool preViewWiFi(const char* sarr[], int narr)
 bool ViewWiFi(const char* sarr[], int narr)
 {
   bool iswifiview=true;
+  int statusWiFi;
+  // Сбрасываем начальный уровень принимаемого сигнала (дБм - децибел на милливатт) 
+  eRSSI = -999;          
   // Трассируем итоговый массив учетных записей возможных локальных сетей
   // for (int i = 0; i < narr; ++i) Serial.println(sarr[i]);
   /*
@@ -214,18 +222,26 @@ bool ViewWiFi(const char* sarr[], int narr)
   специальные меры в случае неудачи, например, попробовать подключиться к резервной сети. 
   [Wi-Fi API](https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html)
   */
-  int statusWiFi=WiFi.status();
-  Serial.print("WiFi.status = "); Serial.println(statusWiFi);
-  // 2. Если нет подключения к сети, то сразу переходим в режим сканирования
-  if (statusWiFi==6)
+  // Ждем немного перед сканированием
+  delay(100);
+  // Проверяем режим работы WiFi
+  //CheckWiFiMode();
+  //int modeWiFi=WiFi.getMode();
+  Serial.print("WiFi.getMode() = "); Serial.println(WiFi.getMode());
+  // Проверяем статус
+  statusWiFi=WiFi.status();
+  Serial.print("WiFi.status()  = "); Serial.println(statusWiFi);
+  // 1. Если неопределенный статус подключения к сети, то сразу переходим в режим сканирования
+  if ((statusWiFi>6)&&(statusWiFi<255))
   {
     iswifiview=preViewWiFi(sarr,narr);
     return iswifiview;
   }
-  // 1. Если неопределенный статус подключения к сети, то
-  // переводим Wi-Fi в режим станции и отключаемся от точки доступа - 
-  // в таких обстоятельствах выполняем сканирование сети
-  else if ((statusWiFi>6)&&(statusWiFi<255))
+  // 2. Если нет подключения к сети, то
+  // --- переводим Wi-Fi в режим станции и отключаемся от точки доступа - 
+  // --- в таких обстоятельствах выполняем сканирование сети
+  /*
+  else if (statusWiFi==6)
   {
     iswifiview=WiFi.mode(WIFI_STA);
     if (!iswifiview) 
@@ -233,20 +249,46 @@ bool ViewWiFi(const char* sarr[], int narr)
       Serial.println("Не удалось установить режим работы станции (ошибка WiFi.mode(WIFI_STA)"); 
       return false;
     }
+    / *
+    iswifiview=WiFi.mode(WIFI_STA);
+    if (!iswifiview) 
+    {
+      Serial.println("Не удалось установить режим работы станции (ошибка WiFi.mode(WIFI_STA)"); 
+      return false;
+    }
+    * /
+    / *
     iswifiview=WiFi.disconnect();
     if (!iswifiview) 
     {
       Serial.println("Не удалось отключиться от Wi-Fi перед сканированием"); 
       return false;
     }
+    * /
     iswifiview=preViewWiFi(sarr,narr);
     return iswifiview;
   }
-  // 3. Отменяем сканирование в остальных случаях
+  */
+  // 3. ------Отменяем сканирование в остальных случаях
   else
   {
-    CheckWiFiStatus();
-    return false;
+    iswifiview=WiFi.mode(WIFI_OFF);
+    if (!iswifiview) 
+    {
+      Serial.println("---------Не удалось установить режим работы станции (ошибка WiFi.mode(WIFI_STA)"); 
+      return false;
+    }
+    // Ждем немного перед сканированием
+    delay(100);
+    // Проверяем режим работы WiFi
+    //CheckWiFiMode();
+    //int modeWiFi=WiFi.getMode();
+    Serial.print("WiFi.getMode() = "); Serial.println(WiFi.getMode());
+    // Проверяем статус
+    //statusWiFi=WiFi.status();
+    Serial.print("WiFi.status()  = "); Serial.println(WiFi.status());
+    iswifiview=preViewWiFi(sarr,narr);
+    return iswifiview;
   }
 }
 // ****************************************************************************
@@ -274,12 +316,12 @@ void InitWiFi(const char* ssid, const char* password)
   Serial.print("IP рабочей станции:  ");  Serial.print(WiFi.localIP());  Serial.print("  "); Serial.println(ssid);
 }
 // ****************************************************************************
-// *                   Определить статус соединения с WiFi                    *
+// *            Проверить и сообщить статус соединения с WiFi                 *
 // * https://github.com/arduino/esp8266/blob/master/libraries/ESP8266WiFi/src/include/wl_definitions.h
 // ****************************************************************************
-int CheckWiFiStatus() 
+wl_status_t CheckWiFiStatus() 
 {
-  int wifiStatus = WiFi.status();
+  wl_status_t wifiStatus = WiFi.status();
   switch (wifiStatus) 
   {
     // Cтандартный статус перед попыткой подключиться к WiFi-сети. Возвращается, 
@@ -322,6 +364,34 @@ int CheckWiFiStatus()
       break;
   }
   return wifiStatus;
+}
+// ****************************************************************************
+// *           Проверить и сообщить, какой включен режим работы WiFi          *
+// ****************************************************************************
+WiFiMode_t CheckWiFiMode() 
+{
+  WiFiMode_t wifiMode = WiFi.getMode();
+  switch (wifiMode) 
+  {
+    case WIFI_OFF:           // 0 
+      Serial.println("Wi-Fi выключен");
+      break;
+    case WIFI_STA:           // 1
+      Serial.println("Включен режим станции - STA (подключение к AP)");
+      break;
+    // Завершено сканирование ближайших WiFi-сетей;
+    case WIFI_AP:            // 2
+      Serial.println("Включен режим собственной точки доступа - AP");
+      break;
+    // Произошло успешное подключение к WiFi-сети (AP)
+    case WIFI_AP_STA:        // 3
+      Serial.println("Включены режимы STA и AP одновременно");
+      break;
+    default:
+      Serial.println("Неопределенный режим работы WiFi");
+      break;
+  }
+  return wifiMode;
 }
 
 // ************************************************************* ChipWiFi.h ***
