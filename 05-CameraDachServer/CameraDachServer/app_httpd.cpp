@@ -20,10 +20,11 @@
 
 #include "rLog.h" 
 #include <WiFi.h>
+#include <WiFiMulti.h>
 
 #include "help.page"
 
-
+WiFiMulti wifiMulti;
 
 // Параметры локальной и собственной сети контроллера для передачи в html
 char hssid[12];     // не более 11 символов, латиница
@@ -35,22 +36,42 @@ char hsoftAPIP[18];
 // ****************************************************************************
 void InitWiFi(const char* ssid, const char* password)
 {
-  //WiFi.mode(WIFI_MODE_APSTA);
-  //char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
-  //WiFi.softAP(soft_apssid, soft_apssid);
-  
-  
-  //ESP32 As access point IP: 192.168.4.1
-  WiFi.mode(WIFI_AP); //Access Point mode
-  WiFi.softAP("ESPWebServer", "12345678");    //Password length minimum 8 char
 
-  //Comment below code if you are using Access point only
-  //ESP32 connects to your wifi -----------------------------------
-  WiFi.mode(WIFI_STA); //Connectto your wifi
-  //WiFi.begin(ssid, password);
+  WiFi.mode(WIFI_MODE_APSTA);
+  char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
+  WiFi.softAP(soft_apssid, soft_apssid);
 
+  wifiMulti.addAP("TP-Link_B394",  "18009217");
+  wifiMulti.addAP("tve-DESKTOP",   "Ue18-647");
+  wifiMulti.addAP("OPPO A9 2020",  "b277a4ee84e8");
+  wifiMulti.addAP("tve-MONOBLOCK", "Ue18-647");
+  wifiMulti.addAP("linksystve",    "X93K6KQ6WF");
+  wifiMulti.addAP("GoshaIMila",    "t1s2wde4bE");
+
+  Serial.println("Connecting Wifi...");
+  if (wifiMulti.run() == WL_CONNECTED) 
+  {
+    Serial.println("");
+    Serial.println("WiFi connected");
+    Serial.println("IP address: ");
+    Serial.println(WiFi.localIP());
+  }
+
+  // Инициируем hssid, hlocalIP, hsoftAPIP - параметры локальной и собственной 
+  // сети контроллера для передачи в html
+  String(WiFi.SSID()).toCharArray(hssid,String(WiFi.SSID()).length()+1); 
+  String ipaddr=WiFi.localIP().toString(); ipaddr.toCharArray(hlocalIP,ipaddr.length()+1); 
+  ipaddr=WiFi.softAPIP().toString(); ipaddr.toCharArray(hsoftAPIP,ipaddr.length()+1); 
+  Serial.print("IP - собственной сети: ");  Serial.print(hsoftAPIP); Serial.print("  "); Serial.println(soft_ap_ssid);
+  Serial.print("IP - рабочей станции:  ");  Serial.print(hlocalIP);  Serial.print("  "); Serial.println(hssid);
   
-   
+
+
+  /*
+  WiFi.mode(WIFI_MODE_APSTA);
+  char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
+  WiFi.softAP(soft_apssid, soft_apssid);
+
   // Подключаемся к WiFi
   WiFi.begin(ssid, password);
   WiFi.setSleep(false);
@@ -67,32 +88,8 @@ void InitWiFi(const char* ssid, const char* password)
   String(ssid).toCharArray(hssid,String(ssid).length()+1); 
   String ipaddr=WiFi.localIP().toString(); ipaddr.toCharArray(hlocalIP,ipaddr.length()+1); 
   ipaddr=WiFi.softAPIP().toString(); ipaddr.toCharArray(hsoftAPIP,ipaddr.length()+1); 
-  
-  // Если статический адрес для TP-Link_B394
-  /*
-  Serial.print("Current ESP32 IP: ");      Serial.println(WiFi.localIP());
-  Serial.print("Gateway1 (router) IP: ");  Serial.println(WiFi.gatewayIP());
-  Serial.print("Subnet Mask: " );          Serial.println(WiFi.subnetMask());
-  Serial.print("Primary DNS: ");           Serial.println(WiFi.dnsIP(0));
-  Serial.print("Secondary DNS: ");         Serial.println(WiFi.dnsIP(1));
-  // Static IP configuration
-  IPAddress staticIP(192, 168, 0, 200); // ESP32 static IP
-  IPAddress gateway(192, 168, 0, 1);    // IP Address of your network gateway (router)
-  IPAddress subnet(255, 255, 255, 0);   // Subnet mask
-  IPAddress primaryDNS(192, 168, 0, 1); // Primary DNS (optional)
-  IPAddress secondaryDNS(0, 0, 0, 0);   // Secondary DNS (optional)
-  // Configuring static IP
-  if(!WiFi.config(staticIP, gateway, subnet, primaryDNS, secondaryDNS)) 
-  {
-    Serial.println("Failed to configure Static IP");
-  } 
-  else 
-  {
-    Serial.println("Static IP configured!");
-  }
-  Serial.print("ESP32 IP Address: ");
-  Serial.println(WiFi.localIP());  // Print the ESP32 IP address to Serial Monitor
   */
+
 }
 
 /*

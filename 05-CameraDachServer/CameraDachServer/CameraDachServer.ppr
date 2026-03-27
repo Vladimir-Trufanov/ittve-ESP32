@@ -31,6 +31,7 @@ CameraDachServer
 		ci.yml
 		ctrl_define.h
 		help.page
+		jpr.h
 		rLog.cpp
 		rLog.h
 [Open project files]
@@ -43,17 +44,17 @@ CameraDachServer
 Main=
 Selected=app_httpd.cpp
 [app_httpd.cpp]
-TopLine=34
-Caret=5,40
+TopLine=48
+Caret=5,49
 [camera_index.h]
 TopLine=116
 Caret=39,155
 [CameraDachServer.ino]
-TopLine=29
-Caret=6,29
+TopLine=106
+Caret=109,118
 [html\camera_index_v4.html]
-TopLine=953
-Caret=1,992
+TopLine=833
+Caret=30,845
 [board_config.h]
-TopLine=1
-Caret=33,14
+TopLine=2
+Caret=9,14
