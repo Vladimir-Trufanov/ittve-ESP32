@@ -1,6 +1,6 @@
 /** Arduino, ESP32, C/C++ **************************** CameraDachServer.ino ***
  * 
- * v4.0.7, 13.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.8, 28.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
  * Preferences:       https://espressif.github.io/arduino-esp32/package_esp32_dev_index.json
@@ -12,16 +12,22 @@
 **/
 
 #include <WiFi.h>
-#include "esp_camera.h"
+#include <WiFiMulti.h>
+WiFiMulti wifiMulti;
+
 
 // Выбираем модель камеры
+#include "esp_camera.h"
 #include "board_config.h"
 #include "ctrl_define.h"
 #include "jpr.h"
 
-void InitWiFi();
+void IniSayWiFi();
 void startCameraServer();
 void setupLedFlash();
+
+static unsigned long currentMillis;  // текущее время в миллисекундах 
+static bool isWiFi=false;  
 
 void setup() 
 {
@@ -104,7 +110,41 @@ void setup()
 
   // Инициируем работу контроллера, как станции WiFi и с собственной сетью
   //print_mem("до ScanWiFi"); 
-  InitWiFi();
+
+
+  WiFi.mode(WIFI_MODE_APSTA);
+  char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
+  WiFi.softAP(soft_apssid, soft_apssid);
+
+  // Включаем прикладную обработку событий с WiFi через безымянные лямбда-функции 
+  WiFiEventId_t eventID = WiFi.onEvent
+  (
+    [](WiFiEvent_t event, WiFiEventInfo_t info) 
+    {
+      //Serial.print("Wi-Fi потерял связь. Причина: ");
+      //Serial.println(info.wifi_sta_disconnected.reason);
+      isWiFi=false;  
+    },
+    WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED
+  );
+
+  wifiMulti.addAP("TP-Link_B394",  "18009217");
+  wifiMulti.addAP("tve-DESKTOP",   "Ue18-647");
+  wifiMulti.addAP("OPPO A9 2020",  "b277a4ee84e8");
+  wifiMulti.addAP("tve-MONOBLOCK", "Ue18-647");
+  wifiMulti.addAP("linksystve",    "X93K6KQ6WF");
+  wifiMulti.addAP("GoshaIMila",    "t1s2wde4bE");
+
+  Serial.println("Connecting Wifi...");
+  delay(100);
+  if (wifiMulti.run() == WL_CONNECTED) 
+  {
+    Serial.println("WiFi подсоединен в Setup");
+    isWiFi=true; 
+  }
+
+
+  IniSayWiFi();
   //print_mem("по InitWiFi"); 
 
   // Запускаем в работу камеру                    
@@ -116,9 +156,27 @@ void setup()
 
 void loop() 
 {
-  // В фоновом цикле ничего не делается. 
+  // Выводим контрольное сообщение после каждых 10 секунд
+  if ((millis()-currentMillis) > 10000) 
+  { 
+    Serial.println("10000!");
+    currentMillis = millis();
+  }  
+  //
+  if (!isWiFi)
+  {
+    Serial.println("Подключается WiFi после потери сети");
+    while (wifiMulti.run() != WL_CONNECTED) 
+    { 
+      Serial.print("."); delay(500);
+    }
+    Serial.println(" ");
+    Serial.println("WiFi подсоединен!");
+    IniSayWiFi();
+    isWiFi=true; 
+  }
   // Трансляция потока выполняется веб-сервером в другой задаче
-  delay(100);  // give CPU some idle time
+  delay(10);  
 }
 
 // 2026-03-11 в коде приложения оставлен весь путь работы с параметром xclk, как пример.

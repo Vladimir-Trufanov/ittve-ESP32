@@ -20,11 +20,8 @@
 
 #include "rLog.h" 
 #include <WiFi.h>
-#include <WiFiMulti.h>
 
 #include "help.page"
-
-WiFiMulti wifiMulti;
 
 // Параметры локальной и собственной сети контроллера для передачи в html
 char hssid[12];     // не более 11 символов, латиница
@@ -34,29 +31,8 @@ char hsoftAPIP[18];
 // ****************************************************************************
 // *   Инициируем работу контроллера, как станции WiFi и с собственной сетью  *
 // ****************************************************************************
-void InitWiFi()
+void IniSayWiFi()
 {
-
-  WiFi.mode(WIFI_MODE_APSTA);
-  char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
-  WiFi.softAP(soft_apssid, soft_apssid);
-
-  wifiMulti.addAP("TP-Link_B394",  "18009217");
-  wifiMulti.addAP("tve-DESKTOP",   "Ue18-647");
-  wifiMulti.addAP("OPPO A9 2020",  "b277a4ee84e8");
-  wifiMulti.addAP("tve-MONOBLOCK", "Ue18-647");
-  wifiMulti.addAP("linksystve",    "X93K6KQ6WF");
-  wifiMulti.addAP("GoshaIMila",    "t1s2wde4bE");
-
-  Serial.println("Connecting Wifi...");
-  if (wifiMulti.run() == WL_CONNECTED) 
-  {
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
-  }
-
   // Инициируем hssid, hlocalIP, hsoftAPIP - параметры локальной и собственной 
   // сети контроллера для передачи в html
   String(WiFi.SSID()).toCharArray(hssid,String(WiFi.SSID()).length()+1); 

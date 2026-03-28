@@ -59,8 +59,8 @@
 // Указываем учетные данные Wi-Fi
 // "OPPO A9 2020"; "TP-Link_B394"; "tve-DESKTOP"; "linksystve"; "linksystve";
 // "b277a4ee84e8"; "18009217"    ; "Ue18-647"   ; "x93k6kq6wf"; "X93K6KQ6WF";
-const char* ssid     = "OPPO A9 2020";
-const char* password = "b277a4ee84e8";
+const char* ssid     = "linksystve";
+const char* password = "X93K6KQ6WF";
 
 #if defined(ESP8266)
   ESP8266WebServer server(80);
@@ -126,7 +126,7 @@ void setup(void)
 
   server.on("/", []() 
   {
-    server.send(200, "text/plain", "Privet! This is ElegantOTA Demo.");
+    server.send(200, "text/plain", "Only English! This is ElegantOTA Demo.");
   });
 
   ElegantOTA.begin(&server);    // Start ElegantOTA
