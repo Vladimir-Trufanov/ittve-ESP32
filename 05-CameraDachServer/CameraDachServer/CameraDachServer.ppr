@@ -42,16 +42,16 @@ CameraDachServer
 4=board_config.h
 [Selected Project Files]
 Main=
-Selected=app_httpd.cpp
+Selected=CameraDachServer.ino
 [app_httpd.cpp]
-TopLine=48
-Caret=5,49
+TopLine=28
+Caret=1,36
 [camera_index.h]
 TopLine=116
 Caret=39,155
 [CameraDachServer.ino]
-TopLine=106
-Caret=109,118
+TopLine=123
+Caret=1,110
 [html\camera_index_v4.html]
 TopLine=833
 Caret=30,845

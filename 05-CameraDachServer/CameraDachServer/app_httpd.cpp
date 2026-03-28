@@ -34,7 +34,7 @@ char hsoftAPIP[18];
 // ****************************************************************************
 // *   Инициируем работу контроллера, как станции WiFi и с собственной сетью  *
 // ****************************************************************************
-void InitWiFi(const char* ssid, const char* password)
+void InitWiFi()
 {
 
   WiFi.mode(WIFI_MODE_APSTA);
@@ -64,10 +64,14 @@ void InitWiFi(const char* ssid, const char* password)
   ipaddr=WiFi.softAPIP().toString(); ipaddr.toCharArray(hsoftAPIP,ipaddr.length()+1); 
   Serial.print("IP - собственной сети: ");  Serial.print(hsoftAPIP); Serial.print("  "); Serial.println(soft_ap_ssid);
   Serial.print("IP - рабочей станции:  ");  Serial.print(hlocalIP);  Serial.print("  "); Serial.println(hssid);
-  
-
 
   /*
+  // Указываем учетные данные Wi-Fi
+  // "OPPO A9 2020"; "TP-Link_B394"; "tve-DESKTOP"; "linksystve"; "linksystve";
+  // "b277a4ee84e8"; "18009217"    ; "Ue18-647"   ; "x93k6kq6wf"; "X93K6KQ6WF";
+  const char* ssid     = "OPPO A9 2020";
+  const char* password = "b277a4ee84e8";
+
   WiFi.mode(WIFI_MODE_APSTA);
   char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
   WiFi.softAP(soft_apssid, soft_apssid);
