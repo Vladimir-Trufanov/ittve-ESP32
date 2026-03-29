@@ -126,7 +126,7 @@ void setup(void)
 
   server.on("/", []() 
   {
-    server.send(200, "text/plain", "Only English! This is ElegantOTA Demo.");
+    server.send(200, "text/plain", "Only English32! This is ElegantOTA Demo.");
   });
 
   ElegantOTA.begin(&server);    // Start ElegantOTA

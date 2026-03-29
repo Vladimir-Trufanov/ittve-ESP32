@@ -11,9 +11,10 @@
 
 // "DachaSad"     - камера для съёмок на природе
 // "OknoNaDorogu" - камера из окна на дорогу
+// "DachaSad"     - ESP32-CAM, контроллер №1
 // "ESP_75C391"   - ESP32-CAM, контроллер №3
 // "ESP_A7E119"   - ESP32-CAM, контроллер №6
-#define soft_ap_ssid "DachaSad" 
+#define soft_ap_ssid "ESP_A7E119" 
 
 // WARNING !!! 
 // Изображения будут переданы частично, если размер изображения превысит размер буфера.

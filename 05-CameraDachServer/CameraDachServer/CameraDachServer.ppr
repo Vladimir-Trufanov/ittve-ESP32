@@ -18,6 +18,19 @@ Extensions=*.*
 [Project tree]
 CameraDachServer
 	+CameraDachServer
+		-build
+			-CameraDachServer_v4-0-7_13-03-2026 
+				build\CameraDachServer_v4-0-7_13-03-2026 \boot_app0.bin
+				build\CameraDachServer_v4-0-7_13-03-2026 \build.options.json
+				build\CameraDachServer_v4-0-7_13-03-2026 \CameraDachServer.ino.bin
+				build\CameraDachServer_v4-0-7_13-03-2026 \CameraDachServer.ino.bootloader.bin
+				build\CameraDachServer_v4-0-7_13-03-2026 \CameraDachServer.ino.elf
+				build\CameraDachServer_v4-0-7_13-03-2026 \CameraDachServer.ino.map
+				build\CameraDachServer_v4-0-7_13-03-2026 \CameraDachServer.ino.merged.bin
+				build\CameraDachServer_v4-0-7_13-03-2026 \CameraDachServer.ino.partitions.bin
+				build\CameraDachServer_v4-0-7_13-03-2026 \flash_args
+				build\CameraDachServer_v4-0-7_13-03-2026 \partitions.csv
+				build\CameraDachServer_v4-0-7_13-03-2026 \sdkconfig
 		-html
 			html\camera_index_v4.html
 			html\CameraDachParms.html
@@ -39,22 +52,30 @@ CameraDachServer
 1=camera_index.h
 2=CameraDachServer.ino
 3=html\camera_index_v4.html
-4=board_config.h
+4=ctrl_define.h
+5=board_config.h
+6=txt.txt
 [Selected Project Files]
 Main=
-Selected=CameraDachServer.ino
+Selected=camera_index.h
 [app_httpd.cpp]
-TopLine=28
-Caret=1,36
+TopLine=661
+Caret=111,678
 [camera_index.h]
-TopLine=116
-Caret=39,155
+TopLine=592
+Caret=45,629
 [CameraDachServer.ino]
-TopLine=123
-Caret=1,110
+TopLine=38
+Caret=37,57
 [html\camera_index_v4.html]
-TopLine=833
-Caret=30,845
+TopLine=963
+Caret=1,1002
+[ctrl_define.h]
+TopLine=26
+Caret=6,26
 [board_config.h]
-TopLine=2
-Caret=9,14
+TopLine=60
+Caret=1,1
+[txt.txt]
+TopLine=1
+Caret=421,1

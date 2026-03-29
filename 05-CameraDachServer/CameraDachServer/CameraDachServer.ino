@@ -1,6 +1,6 @@
 /** Arduino, ESP32, C/C++ **************************** CameraDachServer.ino ***
  * 
- * v4.0.8, 28.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.9, 29.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
  * Preferences:       https://espressif.github.io/arduino-esp32/package_esp32_dev_index.json
@@ -11,10 +11,10 @@
  * Flash Mode:        "QIO"
 **/
 
+// Подключаем библиотеки для подключения камеры к WiFi
 #include <WiFi.h>
 #include <WiFiMulti.h>
 WiFiMulti wifiMulti;
-
 
 // Выбираем модель камеры
 #include "esp_camera.h"
@@ -60,6 +60,19 @@ void setup()
   config.pin_sccb_scl = SIOC_GPIO_NUM;
   config.pin_pwdn = PWDN_GPIO_NUM;
   config.pin_reset = RESET_GPIO_NUM;
+  // ***xclk***=1, устанавливаем рекомендованную частоту входного тактового сигнала 
+  // (есть возможность установить значение config.xclk_freq_hz = 10000000 для более низкой частоты 
+  // обновления, но это может привести к стабильному (более медленному) выполнению. Для ESP32-S3-WROOM 
+  // есть пример, в котором указано значение config.xclk_freq_hz = 24000000 — это 24 МГц XCLK (самая 
+  // высокая стабильная частота). Частота XCLK влияет на работу ESP32-CAM, в частности на скорость 
+  // передачи данных и качество изображения. Теоретически, чем выше частота XCLK, тем быстрее будет 
+  // передача данных. Однако на практике высокая частота XCLK требует большей скорости обработки чипа. 
+  // Кроме того, слишком высокая частота XCLK может привести к тому, что параллельные данные будут несинхронными, 
+  // что вызовет дрожание изображения или даже мерцание экрана. 
+  // Для достижения оптимальной частоты кадров и качества изображения необходимо сбалансировать 
+  // частоту XCLK в соответствии с конкретными сценариями применения. Например, для достижения 60 кадров 
+  // в секунду в формате CIF необходима работа на частоте XCLK 24 МГц, в то время как на частоте 20 МГц 
+  // можно достичь только 50 кадров в секунду. 
   config.xclk_freq_hz = 20000000;
   
   // 2026-03-11 в коде приложения на странице управления камерой 
@@ -96,7 +109,6 @@ void setup()
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) 
   {
-    //Serial.printf("Ошибка инициализации камеры 0x%x", err);
     log_i("Ошибка инициализации камеры 0x%x", err);
     return;
   }
@@ -107,16 +119,14 @@ void setup()
   {
     s->set_framesize(s, FRAMESIZE_QVGA);
   }
-
   // Инициируем работу контроллера, как станции WiFi и с собственной сетью
-  //print_mem("до ScanWiFi"); 
-
-
+  // print_mem(" WIFI_MODE_APSTA"); 
   WiFi.mode(WIFI_MODE_APSTA);
   char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
   WiFi.softAP(soft_apssid, soft_apssid);
-
-  // Включаем прикладную обработку событий с WiFi через безымянные лямбда-функции 
+  // Включаем обработку события отсоединения с WiFi через безымянную лямбда-функцию
+  // (так как это выполняется в отдельном потоке, то просто устанавливаем флаг,
+  // чтобы его обнарудить в цикле loop и переподключить WiFi) 
   WiFiEventId_t eventID = WiFi.onEvent
   (
     [](WiFiEvent_t event, WiFiEventInfo_t info) 
@@ -127,15 +137,14 @@ void setup()
     },
     WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED
   );
-
+  // Привязываем возможные сети и подключаемся к WiFi
   wifiMulti.addAP("TP-Link_B394",  "18009217");
   wifiMulti.addAP("tve-DESKTOP",   "Ue18-647");
   wifiMulti.addAP("OPPO A9 2020",  "b277a4ee84e8");
   wifiMulti.addAP("tve-MONOBLOCK", "Ue18-647");
   wifiMulti.addAP("linksystve",    "X93K6KQ6WF");
   wifiMulti.addAP("GoshaIMila",    "t1s2wde4bE");
-
-  Serial.println("Connecting Wifi...");
+  Serial.println("Подключается WiFi ... ");
   delay(100);
   if (wifiMulti.run() == WL_CONNECTED) 
   {
@@ -145,7 +154,7 @@ void setup()
 
 
   IniSayWiFi();
-  //print_mem("по InitWiFi"); 
+  // print_mem("после IniSayWiFi"); 
 
   // Запускаем в работу камеру                    
   startCameraServer();

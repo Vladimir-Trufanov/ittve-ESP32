@@ -29,7 +29,8 @@ char hlocalIP[18];
 char hsoftAPIP[18];
 
 // ****************************************************************************
-// *   Инициируем работу контроллера, как станции WiFi и с собственной сетью  *
+// *              Готовим параметры сетей для CameraWebServer                 *
+// * (инициируем работу контроллера, как станции WiFi и с собственной сетью)  *
 // ****************************************************************************
 void IniSayWiFi()
 {
@@ -40,7 +41,6 @@ void IniSayWiFi()
   ipaddr=WiFi.softAPIP().toString(); ipaddr.toCharArray(hsoftAPIP,ipaddr.length()+1); 
   Serial.print("IP - собственной сети: ");  Serial.print(hsoftAPIP); Serial.print("  "); Serial.println(soft_ap_ssid);
   Serial.print("IP - рабочей станции:  ");  Serial.print(hlocalIP);  Serial.print("  "); Serial.println(hssid);
-
   /*
   // Указываем учетные данные Wi-Fi
   // "OPPO A9 2020"; "TP-Link_B394"; "tve-DESKTOP"; "linksystve"; "linksystve";
@@ -69,9 +69,7 @@ void IniSayWiFi()
   String ipaddr=WiFi.localIP().toString(); ipaddr.toCharArray(hlocalIP,ipaddr.length()+1); 
   ipaddr=WiFi.softAPIP().toString(); ipaddr.toCharArray(hsoftAPIP,ipaddr.length()+1); 
   */
-
 }
-
 /*
     ARDUINO_ARCH_ESP32 — макрос, который определяется при компиляции с использованием 
   ядра ESP32 для Arduino. Он указывает на то, что плата — на базе микроконтроллера ESP32. 
@@ -677,8 +675,9 @@ static esp_err_t status_handler(httpd_req_t *req)
   *p++ = 0;
   
   // Трассируем в параметры потока изображений
-  Serial.println("Параметры потока изображений: ");
+  Serial.print("Параметры потока изображений [strlen(json_response) = "); Serial.print(strlen(json_response)); Serial.println("]:");
   Serial.println(json_response);
+  
   // Возвращаем ответ на запрос с указанием параметров в json-строке
   httpd_resp_set_type(req, "application/json");
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
