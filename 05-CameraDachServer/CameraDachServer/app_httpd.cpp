@@ -27,6 +27,13 @@
 char hssid[12];     // не более 11 символов, латиница
 char hlocalIP[18];
 char hsoftAPIP[18];
+// Данные о последней перезагрузке контроллера для передачи в html
+// <tr><td class="tnet" id="dnreload"> Дата     </td><td class="tcam" id="dvreload"> 28.03.2026 </td></tr> 
+// <tr><td class="tnet" id="tnreload"> Время    </td><td class="tcam" id="tvreload"> 08-36-58   </td></tr> 
+// <tr><td class="tnet" id="nnreload"> Загрузка </td><td class="tcam" id="nvreload"> 12         </td></tr> 
+char dvreload[12];
+char tvreload[10];
+char nvreload[8];
 
 // ****************************************************************************
 // *              Готовим параметры сетей для CameraWebServer                 *

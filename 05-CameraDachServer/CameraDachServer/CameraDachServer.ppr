@@ -17,7 +17,7 @@ HTServer=localhost
 Extensions=*.*
 [Project tree]
 CameraDachServer
-	+CameraDachServer
+	-CameraDachServer
 		-build
 			-CameraDachServer_v4-0-7_13-03-2026 
 				build\CameraDachServer_v4-0-7_13-03-2026 \boot_app0.bin
@@ -37,6 +37,8 @@ CameraDachServer
 			html\CameraDachParms.md
 			html\help.shablon
 		app_httpd.cpp
+		ArduinoNvs.cpp
+		ArduinoNvs.h
 		board_config.h
 		camera_index.h
 		CameraDachServer.ino
@@ -47,6 +49,7 @@ CameraDachServer
 		jpr.h
 		rLog.cpp
 		rLog.h
+		txt.txt
 [Open project files]
 0=app_httpd.cpp
 1=camera_index.h
@@ -59,17 +62,17 @@ CameraDachServer
 Main=
 Selected=camera_index.h
 [app_httpd.cpp]
-TopLine=661
-Caret=111,678
+TopLine=29
+Caret=1,37
 [camera_index.h]
-TopLine=592
-Caret=45,629
+TopLine=126
+Caret=39,155
 [CameraDachServer.ino]
-TopLine=38
-Caret=37,57
+TopLine=304
+Caret=1,182
 [html\camera_index_v4.html]
-TopLine=963
-Caret=1,1002
+TopLine=960
+Caret=1,999
 [ctrl_define.h]
 TopLine=26
 Caret=6,26
