@@ -347,6 +347,10 @@ td a{color:yellow;}
 .tnet {width:46%;}
 table{border-collapse:collapse; margin-bottom:.6rem;} 
 th{font-size:.9rem;} 
+/* Управление кнопкой и таблицей загрузок */
+#tr2load {display:none;}
+#treload:hover #tr2load {display:block; cursor:pointer;}
+#treload:hover #tr1load {display:none;}
 
 </style>
 </head>
@@ -553,13 +557,17 @@ th{font-size:.9rem;}
         </div>
       </div>
             
-      <table>
+      <div id=treload>
+      <table id="tr1load">
       <tbody> 
-        <tr><td class="tnet" id="dnreload"> Дата     </td><td class="tcam" id="dvreload"> 28.03.2026 </td></tr> 
-        <tr><td class="tnet" id="tnreload"> Время    </td><td class="tcam" id="tvreload"> 08:36:58   </td></tr> 
-        <tr><td class="tnet" id="nnreload"> Загрузка </td><td class="tcam" id="nvreload"> 12         </td></tr> 
+        <tr>
+        <td class="tnet" id="nnreload"> Загрузка </td>
+        <td id="nvreload"> </td><td id="dvreload"> </td><td id="tvreload"> </td>
+        </tr> 
       </tbody>
       </table>
+      <button id="tr2load"> Перезагрузить контроллер </button>
+      </div>
 
       </nav>
     </div>
@@ -851,6 +859,10 @@ document.addEventListener('DOMContentLoaded', function (event)
     document.querySelector('#hlocalIP').textContent     = state["hlocalIP"];
     document.querySelector('#soft_ap_ssid').textContent = state["soft_ap_ssid"];
     document.querySelector('#hsoftAPIP').textContent    = state["hsoftAPIP"];
+    // Обновляем информацию о последней перезагрузке контроллера
+    document.querySelector('#nvreload').textContent     = state["nvreload"];
+    document.querySelector('#dvreload').textContent     = state["dvreload"];
+    document.querySelector('#tvreload').textContent     = state["tvreload"];
     // Перебираем html-строки класса "default-action"
     document
     .querySelectorAll('.default-action')
@@ -884,7 +896,8 @@ document.addEventListener('DOMContentLoaded', function (event)
   const streamButton = document.getElementById('toggle-stream')
   const closeButton = document.getElementById('close-stream')
   const saveButton = document.getElementById('save-still');           // ***save***=2, связали кнопку с переменной
-  const ledGroup = document.getElementById('led-group')
+  const ledGroup = document.getElementById('led-group');
+  const reloadButton = document.getElementById('tr2load');
 
   const stopStream = () => 
   {
@@ -951,6 +964,22 @@ document.addEventListener('DOMContentLoaded', function (event)
       console.error(e);
     }
     canvas.parentNode.removeChild(canvas);
+  }
+  reloadButton.onclick = () => 
+  {
+    let eload = prompt("Перезагрузить контроллер?", "eload");
+    if (eload == "eload")
+    {
+      fetch(`${baseHost}/reload`)
+      .then(function (response) 
+      {
+        console.log("Перезагрузка: ",response.json());
+        return response.json();
+      })
+      .then(function (state) 
+      {
+      })
+    }
   }
   // Запускаем изменение всех элементов класса "default-action"
   document

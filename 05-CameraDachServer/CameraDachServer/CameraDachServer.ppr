@@ -31,8 +31,8 @@ CameraDachServer
 				build\CameraDachServer_v4-0-7_13-03-2026 \flash_args
 				build\CameraDachServer_v4-0-7_13-03-2026 \partitions.csv
 				build\CameraDachServer_v4-0-7_13-03-2026 \sdkconfig
-		-html
-			html\camera_index_v4.html
+		+html
+			html\camera_index_v5.html
 			html\CameraDachParms.html
 			html\CameraDachParms.md
 			html\help.shablon
@@ -51,31 +51,31 @@ CameraDachServer
 0=app_httpd.cpp
 1=camera_index.h
 2=CameraDachServer.ino
-3=html\camera_index_v4.html
-4=ctrl_WiFi.h
-5=board_config.h
+3=ctrl_WiFi.h
+4=board_config.h
+5=html\camera_index_v5.html
 6=txt.txt
 [Selected Project Files]
 Main=
-Selected=ctrl_WiFi.h
+Selected=camera_index.h
 [app_httpd.cpp]
-TopLine=29
-Caret=1,37
+TopLine=899
+Caret=20,911
 [camera_index.h]
-TopLine=124
-Caret=39,155
+TopLine=123
+Caret=10,640
 [CameraDachServer.ino]
-TopLine=36
-Caret=1,36
-[html\camera_index_v4.html]
-TopLine=960
-Caret=1,999
+TopLine=182
+Caret=16,217
 [ctrl_WiFi.h]
-TopLine=6
+TopLine=56
 Caret=1,95
 [board_config.h]
-TopLine=60
+TopLine=58
 Caret=1,1
+[html\camera_index_v5.html]
+TopLine=989
+Caret=1,1028
 [txt.txt]
 TopLine=1
 Caret=421,1

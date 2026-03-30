@@ -146,7 +146,7 @@ void setup()
   wifiMulti.addAP("tve-MONOBLOCK", "Ue18-647");
   wifiMulti.addAP("linksystve",    "X93K6KQ6WF");
   wifiMulti.addAP("GoshaIMila",    "t1s2wde4bE");
-  Serial.println("Подключаемся WiFi ... ");
+  Serial.println("Подключаемся к WiFi ... ");
   delay(100);
   if (wifiMulti.run() == WL_CONNECTED) 
   {

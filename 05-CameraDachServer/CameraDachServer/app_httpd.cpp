@@ -661,7 +661,11 @@ static esp_err_t status_handler(httpd_req_t *req)
   p += sprintf(p, "\"hssid\":\"%s\",",        hssid);
   p += sprintf(p, "\"hlocalIP\":\"%s\",",     hlocalIP);
   p += sprintf(p, "\"soft_ap_ssid\":\"%s\",", soft_ap_ssid);
-  p += sprintf(p, "\"hsoftAPIP\":\"%s\"",     hsoftAPIP);
+  p += sprintf(p, "\"hsoftAPIP\":\"%s\",",    hsoftAPIP);
+  // Передаём данные о последней перезагрузке контроллера
+  p += sprintf(p, "\"nvreload\":\"%s\",",     nvreload);
+  p += sprintf(p, "\"dvreload\":\"%s\",",     dvreload);
+  p += sprintf(p, "\"tvreload\":\"%s\"",      tvreload);
   *p++ = '}';
   *p++ = 0;
   
@@ -673,6 +677,27 @@ static esp_err_t status_handler(httpd_req_t *req)
   httpd_resp_set_type(req, "application/json");
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
   return httpd_resp_send(req, json_response, strlen(json_response));
+}
+// ****************************************************************************
+// *            По запросу сервера будем перезагружать контроллер             *
+// ****************************************************************************
+static esp_err_t reload_handler(httpd_req_t *req) 
+{
+  static char json_resp[256];
+  // Формируем json-строку для передачи серверу
+  char *p = json_resp;
+  *p++ = '{';
+  p += sprintf(p, "\"ael\":%d", 95);
+  *p++ = '}';
+  *p++ = 0;
+
+  Serial.println("Перезагружаем контроллер !!!"); 
+  Serial.println(json_resp);
+
+  // Возвращаем ответ на запрос с указанием параметров в json-строке
+  httpd_resp_set_type(req, "application/json");
+  httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
+  return httpd_resp_send(req, json_resp, strlen(json_resp));
 }
 // ***xclk***=3, обработчика HTTP-запроса по изменению частоты
 // входного тактового сигнала
@@ -851,7 +876,7 @@ static esp_err_t help_handler(httpd_req_t *req)
 void startCameraServer() 
 {
   httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-  config.max_uri_handlers = 12;
+  config.max_uri_handlers = 13;
   // httpd_uri_t:1
   httpd_uri_t index_uri = 
   {
@@ -872,6 +897,20 @@ void startCameraServer()
     .uri = "/status",
     .method = HTTP_GET,
     .handler = status_handler,
+    .user_ctx = NULL
+    #ifdef CONFIG_HTTPD_WS_SUPPORT
+      ,
+      .is_websocket = true,
+      .handle_ws_control_frames = false,
+      .supported_subprotocol = NULL
+    #endif
+  };
+  // httpd_uri_t:13
+  httpd_uri_t reload_uri = 
+  {
+    .uri = "/reload",
+    .method = HTTP_GET,
+    .handler = reload_handler,
     .user_ctx = NULL
     #ifdef CONFIG_HTTPD_WS_SUPPORT
       ,
@@ -1017,6 +1056,7 @@ void startCameraServer()
     httpd_register_uri_handler(camera_httpd, &index_uri);
     httpd_register_uri_handler(camera_httpd, &cmd_uri);
     httpd_register_uri_handler(camera_httpd, &status_uri);
+    httpd_register_uri_handler(camera_httpd, &reload_uri);
     httpd_register_uri_handler(camera_httpd, &capture_uri);
     httpd_register_uri_handler(camera_httpd, &bmp_uri);
     // ***xclk***=9, подключаем обработчик по изменению частоты тактового сигнала
