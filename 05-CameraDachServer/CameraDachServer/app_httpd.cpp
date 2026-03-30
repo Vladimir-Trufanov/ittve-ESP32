@@ -2,11 +2,12 @@
  * 
  * Построить работу сервера потока изображений
  * 
- * v4.0.5, 16.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.6, 30.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
 **/
 #include "arduino.h"
+#include "ArduinoNvs.h"
 
 #include "esp_http_server.h"
 #include "esp_timer.h"
@@ -31,13 +32,13 @@ char hsoftAPIP[18];
 // <tr><td class="tnet" id="dnreload"> Дата     </td><td class="tcam" id="dvreload"> 28.03.2026 </td></tr> 
 // <tr><td class="tnet" id="tnreload"> Время    </td><td class="tcam" id="tvreload"> 08-36-58   </td></tr> 
 // <tr><td class="tnet" id="nnreload"> Загрузка </td><td class="tcam" id="nvreload"> 12         </td></tr> 
+char nvreload[8];
 char dvreload[12];
 char tvreload[10];
-char nvreload[8];
 
 // ****************************************************************************
-// *              Готовим параметры сетей для CameraWebServer                 *
-// * (инициируем работу контроллера, как станции WiFi и с собственной сетью)  *
+// *            Подготовить параметры сетей для CameraWebServer               *
+// * (инициировать работу контроллера,как станции WiFi и с собственной сетью) *
 // ****************************************************************************
 void IniSayWiFi()
 {
@@ -46,36 +47,19 @@ void IniSayWiFi()
   String(WiFi.SSID()).toCharArray(hssid,String(WiFi.SSID()).length()+1); 
   String ipaddr=WiFi.localIP().toString(); ipaddr.toCharArray(hlocalIP,ipaddr.length()+1); 
   ipaddr=WiFi.softAPIP().toString(); ipaddr.toCharArray(hsoftAPIP,ipaddr.length()+1); 
-  Serial.print("IP - собственной сети: ");  Serial.print(hsoftAPIP); Serial.print("  "); Serial.println(soft_ap_ssid);
-  Serial.print("IP - рабочей станции:  ");  Serial.print(hlocalIP);  Serial.print("  "); Serial.println(hssid);
-  /*
-  // Указываем учетные данные Wi-Fi
-  // "OPPO A9 2020"; "TP-Link_B394"; "tve-DESKTOP"; "linksystve"; "linksystve";
-  // "b277a4ee84e8"; "18009217"    ; "Ue18-647"   ; "x93k6kq6wf"; "X93K6KQ6WF";
-  const char* ssid     = "OPPO A9 2020";
-  const char* password = "b277a4ee84e8";
+  // Инициируем номер последней перезагрузки
+  NVS.begin();
+  sprintf(nvreload, "%d", NVS.getInt("boot_count")); 
+  // Инициируем дату последней перезагрузки
+  String datereload = NVS.getString("datereload");
+  datereload.toCharArray(dvreload,datereload.length()+1); 
+  // Инициируем время последней перезагрузки
+  String timereload = NVS.getString("timereload");
+  timereload.toCharArray(tvreload,timereload.length()+1); 
 
-  WiFi.mode(WIFI_MODE_APSTA);
-  char* soft_apssid = soft_ap_ssid;      // не более 10 символов, латиница
-  WiFi.softAP(soft_apssid, soft_apssid);
-
-  // Подключаемся к WiFi
-  WiFi.begin(ssid, password);
-  WiFi.setSleep(false);
-  Serial.print("Подключение к WiFi");
-  while (WiFi.status() != WL_CONNECTED) 
-  {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.println("WiFi подключен");
-  // Заполняем параметры для передачи в html через status_handler 
-  // [Вывод IPAddress в HTML](https://arduino.ru/forum/programmirovanie/vyvod-ipaddress-v-html)
-  String(ssid).toCharArray(hssid,String(ssid).length()+1); 
-  String ipaddr=WiFi.localIP().toString(); ipaddr.toCharArray(hlocalIP,ipaddr.length()+1); 
-  ipaddr=WiFi.softAPIP().toString(); ipaddr.toCharArray(hsoftAPIP,ipaddr.length()+1); 
-  */
+  Serial.print("IP - собственной сети:  ");  Serial.print(hsoftAPIP); Serial.print(" "); Serial.println(soft_ap_ssid);
+  Serial.print("IP - рабочей станции:   ");  Serial.print(hlocalIP);  Serial.print(" "); Serial.println(hssid);
+  Serial.print("Последняя перезагрузка: ");  Serial.print(nvreload);  Serial.print(" ["); Serial.print(dvreload); Serial.print(", "); Serial.print(tvreload); Serial.println("]");
 }
 /*
     ARDUINO_ARCH_ESP32 — макрос, который определяется при компиляции с использованием 

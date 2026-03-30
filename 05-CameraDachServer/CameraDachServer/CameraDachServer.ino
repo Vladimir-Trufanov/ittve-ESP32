@@ -1,6 +1,6 @@
 /** Arduino, ESP32, C/C++ **************************** CameraDachServer.ino ***
  * 
- * v4.0.9, 29.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.10, 30.03.2026                                Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
  * Preferences:       https://espressif.github.io/arduino-esp32/package_esp32_dev_index.json
@@ -11,9 +11,6 @@
  * Flash Mode:        "QIO"
 **/
 
-// Обеспечиваем хранение в NVS (счетчик перезапусков, дата и время)
-#include <Arduino.h>
-#include "ArduinoNvs.h"
 // Подключаем библиотеки для подключения камеры к WiFi
 #include <WiFi.h>
 #include <WiFiMulti.h>
@@ -25,6 +22,7 @@ WiFiMulti wifiMulti;
 #include "esp_camera.h"
 #include "board_config.h"
 #include "ctrl_define.h"
+#include "ctrl_WiFi.h"
 #include "jpr.h"
 
 void IniSayWiFi();
@@ -32,98 +30,6 @@ void startCameraServer();
 void setupLedFlash();
 
 static unsigned long currentMillis;  // текущее время в миллисекундах 
-static bool isWiFi=false;  
-
-// ****************************************************************************
-// * Настроить интервал синхронизации, имя сервера, режим работы и часовой пояс
-// ****************************************************************************
-void notify(struct timeval* t) 
-{
-  delay(700);
-  Serial.println("Время синхронизировано!");
-}
-void initSNTP() 
-{ 
-   // Определяем, как часто синхронизировать внутренние часы ESP32 с сервером 
-   // SNTP. Интервал указывается в микросекундах. Интервал в 60*60*1000UL 
-   // микросекунд означает синхронизацию каждый час. Разумные интервалы запросов 
-   // обычно составляют от одного-двух раз в день до 5 раз в час. 
-   sntp_set_sync_interval(1 * 59 * 60 * 1000UL);  // 59 минут 
-   // Указываем функцию уведомления (callback), которая вызывается при каждой с
-   // инхронизации. В данном коде для этой цели определяем функцию notify(), 
-   // которая просто выводит «synchronized». 
-   sntp_set_time_sync_notification_cb(notify);
-   // Устанавливаем режим работы: ESP_SNTP_OPMODE_POLL — просто опрашивать
-   // сервер SNTP (есть также ESP_SNTP_OPMODE_LISTENONLY)
-   esp_sntp_setoperatingmode(ESP_SNTP_OPMODE_POLL);
-   // Указываем имя/адрес сервера. При желании можно указать несколько серверов.
-   // Например:
-   // "ntp.msk-ix.ru"
-   //           esp_sntp_setservername(0, «pool.ntp.org»);
-   //           esp_sntp_setservername(1, «de.pool.ntp.org»);
-   //           esp_sntp_setservername(2, «time.nist.gov»);
-   esp_sntp_setservername(0, "ntp.msk-ix.ru");
-   // Запускаем службу SNTP с указанными выше параметрами
-   esp_sntp_init();
-   // Устанавливаем часовой пояс, поскольку сервер SNTP 
-   // возвращает время в формате UTC
-   setTimezone();
-}
-// ****************************************************************************
-// *                           Настроить часовой пояс                         *
-// ****************************************************************************
-void setTimezone() 
-{ 
-   // Здесь устанавливается стандартное время для региона - Европа/Москва
-   // https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv
-   setenv("TZ", "MSK-3", 1);
-   tzset();
-}
-// ****************************************************************************
-// *                            Ожидать синхронизацию                         *
-// ****************************************************************************
-void wait4SNTP() 
-{
-  Serial.println("Ожидание синхронизации ");
-  while (sntp_get_sync_status() != SNTP_SYNC_STATUS_COMPLETED) 
-  {
-    delay(450);
-    Serial.print(".");
-  }
-  Serial.println(" ");
-}
-// ****************************************************************************
-// *   Извлечь информацию о текущем времени и вывести ее в отформатированном  *
-// *   виде с помощью struct tm структуры данных:                             *
-// *                               https://cplusplus.com/reference/ctime/tm/  *
-// ****************************************************************************
-/*
- "%A, %B %d %Y %H:%M:%S" - это спецификаторы формата,  которые определяют,  как
- в struct tm timeinfo; будет отформатирован текст, а члены tm struct следующие:
-  
-  Тип элемента Значение                        Диапазон
-  -----------------------------------------------------
-  tm_sec  int  секунды после минуты            0-61*
-  tm_min  int  минуты после часа               0-59
-  tm_hour int  часы с полуночи                 0-23
-  tm_mday int  день месяца                     1-31
-  tm_mon  int  месяцы с января                 0-11
-  tm_year int  годы с 1900
-  tm_wday  —   количество дней с воскресенья   0-6
-  tm_yday  —   количество дней с 1 января      0-365
-  tm_isdst —   флаг перехода на летнее время 
-  
-  function strftime() - format time as string:
-  https://cplusplus.com/reference/ctime/strftime/
-*/
-void printTime() 
-{
-   struct tm timeinfo;
-   getLocalTime(&timeinfo);
-   Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
-}
-
-uint32_t boot_count;  // счетчик перезапусков
 
 void setup() 
 {
@@ -132,53 +38,6 @@ void setup()
   Serial.println();
 
   delay(5000);
-
-  // Инициируем NVS
-  NVS.begin();
-  // После каждой перезагрузки увеличиваем счётчик загрузок и выводим в терминал.
-  if (NVS.getInt("boot_count")) 
-  {
-    Serial.println("есть число");
-    boot_count = NVS.getInt("boot_count"); 
-    boot_count++;
-  }
-  else 
-  {
-    Serial.println("нет числа!");
-    boot_count = 1; 
-  }
-  NVS.setInt("boot_count", boot_count);
-  printf("Счетчик перезапусков = %d\n", boot_count);
-  /*
-  const uint32_t ui32_set = 4294967295;
-  NVS.setInt("unsigned-long", ui32_set);
-  uint32_t uint32_max = NVS.getInt("unsigned-long"); 
-  printf("МАХ целое без знака: в десятичном виде = %u, в шестнадцатеричном = %#x"  "\n", uint32_max, uint32_max);
-  */
-  /*
-   // Записываем в NVS и читаем строку
-   const String st_set = "Это простая незамысловатая строка для записи в NVS";
-   res = NVS.setString("str", st_set);
-   String str = NVS.getString("str");
-   Serial.println(str);
-   // Записываем и читаем двоичные данные переменной длины (blob)
-   uint8_t blolb_set[8] = {1,2,3,99,100,0xEE,0xFE,0xEE};
-   res = NVS.setBlob("blob", blolb_set, sizeof(blolb_set));
-   size_t blobLength = NVS.getBlobSize("blob"); 
-   uint8_t blob[blobLength];
-   res = NVS.getBlob("blob", blob, sizeof(blob));
-   if (res) 
-   {
-      for (uint8_t i = 0; i < blobLength; i++) 
-      {
-         Serial.printf("blob[%u] = %u; ", i, blob[i]);
-      }
-   }
-   else
-   {
-      Serial.println("Не получилось извлечь BLOB из NVS");
-   }
-  */
   // Показываем контрольные определения
   // CtrlDefine();
   log_i("Контрольная проверка %s", "логирования");
@@ -287,17 +146,20 @@ void setup()
   wifiMulti.addAP("tve-MONOBLOCK", "Ue18-647");
   wifiMulti.addAP("linksystve",    "X93K6KQ6WF");
   wifiMulti.addAP("GoshaIMila",    "t1s2wde4bE");
-  Serial.println("Подключается WiFi ... ");
+  Serial.println("Подключаемся WiFi ... ");
   delay(100);
   if (wifiMulti.run() == WL_CONNECTED) 
   {
-    Serial.println("WiFi подсоединен в Setup");
+    Serial.println("WiFi подсоединен");
     isWiFi=true; 
   }
-
+  // Настраиваем интервал синхронизации, имя сервера, режим работы и часовой пояс
   initSNTP();
+  // Ожидаем синхронизацию 
   wait4SNTP();
-
+  // Изменяем данные о перезагрузках контроллера            
+  setReload(); 
+  // Готовим параметры сетей для CameraWebServer   
   IniSayWiFi();
   // print_mem("после IniSayWiFi"); 
 
