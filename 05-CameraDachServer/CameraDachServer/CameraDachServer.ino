@@ -1,6 +1,6 @@
 /** Arduino, ESP32, C/C++ **************************** CameraDachServer.ino ***
  * 
- * v4.0.10, 30.03.2026                                Автор:      Труфанов В.Е.
+ * v4.0.11, 31.03.2026                                Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
  * Preferences:       https://espressif.github.io/arduino-esp32/package_esp32_dev_index.json
@@ -28,6 +28,7 @@ WiFiMulti wifiMulti;
 void IniSayWiFi();
 void startCameraServer();
 void setupLedFlash();
+bool isReload();
 
 static unsigned long currentMillis;  // текущее время в миллисекундах 
 
@@ -36,12 +37,11 @@ void setup()
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   Serial.println();
-
+  // Делаем начальную задержку
   delay(5000);
   // Показываем контрольные определения
   // CtrlDefine();
-  log_i("Контрольная проверка %s", "логирования");
-
+  // log_i("Контрольная проверка %s", "логирования");
   // Конфигурируем камеру 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -172,6 +172,8 @@ void setup()
 
 void loop() 
 {
+  // Если поступила команда с сервера, перезагружаем контроллер
+  if (isReload()) ESP.restart(); 
   // Выводим контрольное сообщение после каждых 30 секунд
   if ((millis()-currentMillis) > 30000) 
   { 

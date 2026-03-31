@@ -351,6 +351,7 @@ th{font-size:.9rem;}
 #tr2load {display:none;}
 #treload:hover #tr2load {display:block; cursor:pointer;}
 #treload:hover #tr1load {display:none;}
+#winreload {display:none;}
 
 </style>
 </head>
@@ -362,6 +363,13 @@ th{font-size:.9rem;}
   
   <div id="logo">
      <label for="nav-toggle-cb" id="nav-toggle">&#9776;&nbsp;&nbsp;OV2640 на контроллере ESP32-CAM</label>
+  </div>
+  
+  <div id=winreload>
+     Контроллер перезагружается.<br><br>
+     Для продолжения просмотра видеопотока<br>
+     подключитесь заново к локалной сети или<br>
+     к собственной сети контроллера.
   </div>
   
   <div id="content">
@@ -967,17 +975,18 @@ document.addEventListener('DOMContentLoaded', function (event)
   }
   reloadButton.onclick = () => 
   {
-    let eload = prompt("Перезагрузить контроллер?", "eload");
-    if (eload == "eload")
+    let eload = confirm('Перезагрузить контроллер?'); 
+    if (eload)
     {
       fetch(`${baseHost}/reload`)
       .then(function (response) 
       {
         console.log("Перезагрузка: ",response.json());
+        const viewContent = document.getElementById('content');
+        viewContent.style['display'] = 'none';
+        const winreload = document.getElementById('winreload');
+        winreload.style['display'] = 'block';
         return response.json();
-      })
-      .then(function (state) 
-      {
       })
     }
   }

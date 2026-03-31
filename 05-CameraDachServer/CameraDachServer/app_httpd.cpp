@@ -2,7 +2,7 @@
  * 
  * Построить работу сервера потока изображений
  * 
- * v4.0.6, 30.03.2026                                 Автор:      Труфанов В.Е.
+ * v4.0.7, 31.03.2026                                 Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
 **/
@@ -35,6 +35,10 @@ char hsoftAPIP[18];
 char nvreload[8];
 char dvreload[12];
 char tvreload[10];
+
+// Флаг и функция для перезагрузки контроллера
+bool ESPrestart = false;  // true - в цикле loop выполнить перезагрузку контроллера
+bool isReload() {return ESPrestart;}
 
 // ****************************************************************************
 // *            Подготовить параметры сетей для CameraWebServer               *
@@ -693,7 +697,7 @@ static esp_err_t reload_handler(httpd_req_t *req)
 
   Serial.println("Перезагружаем контроллер !!!"); 
   Serial.println(json_resp);
-
+  ESPrestart = true;
   // Возвращаем ответ на запрос с указанием параметров в json-строке
   httpd_resp_set_type(req, "application/json");
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
