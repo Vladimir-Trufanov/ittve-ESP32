@@ -57,8 +57,8 @@ CameraDachServer
 Main=
 Selected=camera_index.h
 [app_httpd.cpp]
-TopLine=691
-Caret=1,701
+TopLine=682
+Caret=1,694
 [CameraDachServer.ino]
 TopLine=167
 Caret=1,181
@@ -66,8 +66,8 @@ Caret=1,181
 TopLine=23
 Caret=1,1
 [html\camera_index_v5.html]
-TopLine=998
-Caret=1,1037
+TopLine=1028
+Caret=1,1067
 [camera_index.h]
-TopLine=128
+TopLine=152
 Caret=39,155

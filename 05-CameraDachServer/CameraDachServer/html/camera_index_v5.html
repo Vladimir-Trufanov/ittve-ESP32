@@ -366,7 +366,7 @@ th{font-size:.9rem;}
   </div>
   
   <div id=winreload>
-     Контроллер перезагружается.<br><br>
+     <br><br>Контроллер перезагружается.<br><br>
      Для продолжения просмотра видеопотока<br>
      подключитесь заново к локалной сети или<br>
      к собственной сети контроллера.
@@ -601,6 +601,7 @@ document.addEventListener('DOMContentLoaded', function (event)
   var streamUrl = baseHost + ':81'
   var myLocal = document.location;
   console.log("Главная страница сервера: "+myLocal.href);
+  console.log("baseHost:                 "+baseHost);
 
   // ---
   // Оттрасстировать запрос на сервер
@@ -978,9 +979,20 @@ document.addEventListener('DOMContentLoaded', function (event)
     let eload = confirm('Перезагрузить контроллер?'); 
     if (eload)
     {
+      //
+      console.log(`${baseHost}/reload`);
+      fetch(`${baseHost}/reload`) 
+      //.then(response => response.json()) 
+      //.then(data => console.log('Данные:', data)) 
+      .then(response => response.text()) 
+      .then(text => console.log('Текст:',text)) 
+      .catch(error => console.error('Ошибка:', error))
+      
+      /*
       fetch(`${baseHost}/reload`)
       .then(function (response) 
       {
+        
         console.log("Перезагрузка: ",response.json());
         const viewContent = document.getElementById('content');
         viewContent.style['display'] = 'none';
@@ -988,6 +1000,24 @@ document.addEventListener('DOMContentLoaded', function (event)
         winreload.style['display'] = 'block';
         return response.json();
       })
+      */
+      /*
+      .then(function (state) 
+      {
+      })
+      */
+      /*
+      .then(data => console.log('data1:',data)) 
+      .catch(error => console.error('Ошибка1:', error))
+      */
+      //
+      /*
+      console.log("myLocal.href: ",myLocal.href);
+      fetch(myLocal.href)
+      .then(response => response.text()) 
+      .then(text => console.log('text:',text)) 
+      .catch(error => console.error('Ошибка2:', error))
+      */
     }
   }
   // Запускаем изменение всех элементов класса "default-action"
