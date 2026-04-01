@@ -980,19 +980,25 @@ document.addEventListener('DOMContentLoaded', function (event)
     if (eload)
     {
       //
-      console.log(`${baseHost}/reload`);
+      console.log(`315 ${baseHost}/reload`);
       fetch(`${baseHost}/reload`) 
       //.then(response => response.json()) 
       //.then(data => console.log('Данные:', data)) 
       .then(response => response.text()) 
-      .then(text => console.log('Текст:',text)) 
-      .catch(error => console.error('Ошибка:', error))
+      //.then(text => console.log('315 Текст:',text)) 
+      .then(function (text) 
+      {
+        console.log('Текст:',text);
+        const viewContent = document.getElementById('content');
+        viewContent.style['display'] = 'none';
+        const winreload = document.getElementById('winreload');
+        winreload.style['display'] = 'block';
+      })
+      .catch(error => console.error('315 Ошибка:', error))
       
       /*
-      fetch(`${baseHost}/reload`)
       .then(function (response) 
       {
-        
         console.log("Перезагрузка: ",response.json());
         const viewContent = document.getElementById('content');
         viewContent.style['display'] = 'none';
@@ -1005,18 +1011,6 @@ document.addEventListener('DOMContentLoaded', function (event)
       .then(function (state) 
       {
       })
-      */
-      /*
-      .then(data => console.log('data1:',data)) 
-      .catch(error => console.error('Ошибка1:', error))
-      */
-      //
-      /*
-      console.log("myLocal.href: ",myLocal.href);
-      fetch(myLocal.href)
-      .then(response => response.text()) 
-      .then(text => console.log('text:',text)) 
-      .catch(error => console.error('Ошибка2:', error))
       */
     }
   }

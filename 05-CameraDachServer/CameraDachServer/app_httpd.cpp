@@ -687,27 +687,10 @@ static esp_err_t status_handler(httpd_req_t *req)
 // ****************************************************************************
 static esp_err_t reload_handler(httpd_req_t *req) 
 {
-  Serial.println("Перезагружаем контроллер !!!"); 
+  Serial.println("Через 15 секунд перезагрузка!"); 
   ESPrestart = true;
   httpd_resp_set_type(req, "text/html");
-  return httpd_resp_send(req, help_page, HTTPD_RESP_USE_STRLEN);
-  /*
-  static char json_resp[256];
-  // Формируем json-строку для передачи серверу
-  char *p = json_resp;
-  *p++ = '{';
-  p += sprintf(p, "\"ael\":%d", 95);
-  *p++ = '}';
-  *p++ = 0;
-
-  Serial.println("Перезагружаем контроллер !!!"); 
-  Serial.println(json_resp);
-  ESPrestart = true;
-  // Возвращаем ответ на запрос с указанием параметров в json-строке
-  httpd_resp_set_type(req, "application/json");
-  httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-  return httpd_resp_send(req, json_resp, strlen(json_resp));
-  */
+  return httpd_resp_send(req,"Через 15 секунд перезагрузка!", HTTPD_RESP_USE_STRLEN);
 }
 // ***xclk***=3, обработчика HTTP-запроса по изменению частоты
 // входного тактового сигнала

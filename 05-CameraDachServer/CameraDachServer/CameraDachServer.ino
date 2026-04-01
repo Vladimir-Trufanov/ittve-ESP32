@@ -173,7 +173,12 @@ void setup()
 void loop() 
 {
   // Если поступила команда с сервера, перезагружаем контроллер
-  if (isReload()) ESP.restart(); 
+  if (isReload()) 
+  {
+    delay(15000); 
+    Serial.println("Перезагружаем контроллер !!!"); 
+    ESP.restart();
+  } 
   // Выводим контрольное сообщение после каждых 30 секунд
   if ((millis()-currentMillis) > 30000) 
   { 

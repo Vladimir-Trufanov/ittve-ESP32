@@ -55,19 +55,19 @@ CameraDachServer
 4=camera_index.h
 [Selected Project Files]
 Main=
-Selected=camera_index.h
+Selected=html\camera_index_v5.html
 [app_httpd.cpp]
-TopLine=682
-Caret=1,694
+TopLine=686
+Caret=48,690
 [CameraDachServer.ino]
 TopLine=167
-Caret=1,181
+Caret=5,179
 [ctrl_WiFi.h]
 TopLine=23
 Caret=1,1
 [html\camera_index_v5.html]
-TopLine=1028
-Caret=1,1067
+TopLine=980
+Caret=1,1061
 [camera_index.h]
-TopLine=152
-Caret=39,155
+TopLine=137
+Caret=39,162
