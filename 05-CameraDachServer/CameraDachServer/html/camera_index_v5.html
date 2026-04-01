@@ -1,4 +1,7 @@
-<!-- Основная страница сервера, управляющая работой камеры ESP32-CAM -->
+<!-- 
+Основная страница сервера, управляющая работой камеры ESP32-CAM
+v2.0.2 01.04.2026 
+-->
 <!doctype html>
 <html lang="ru">
 <head>
@@ -344,7 +347,7 @@ input.toggle-section-button:checked+section.toggle-section {
 
 td {border:1px solid grey; padding-left:.6rem;}
 td a{color:yellow;}
-.tnet {width:46%;}
+.tnet {width:43%;}
 table{border-collapse:collapse; margin-bottom:.6rem;} 
 th{font-size:.9rem;} 
 /* Управление кнопкой и таблицей загрузок */
@@ -366,9 +369,10 @@ th{font-size:.9rem;}
   </div>
   
   <div id=winreload>
-     <br><br>Контроллер перезагружается.<br><br>
-     Для продолжения просмотра видеопотока<br>
-     подключитесь заново к локалной сети или<br>
+     <br><br>Контроллер перезагружается!!!<br><br>
+     Подождите немного, а затем<br>
+     для продолжения просмотра видеопотока<br>
+     подключитесь заново к локальной сети или<br>
      к собственной сети контроллера.
   </div>
   
@@ -391,9 +395,15 @@ th{font-size:.9rem;}
       
       <table>
       <tbody> 
-        <tr><td class="tnet" id="soft_ap_ssid"> DachaSad     </td><td class="tcam" id="hsoftAPIP"> http://192.168.4.1          </td></tr> 
-        <tr><td class="tnet" id="hssid">        OPPO A9 2020 </td><td class="tcam" id="hlocalIP">  http://192.168.0.104        </td></tr> 
-        <tr><td class="tnet" id="hhelp">        Инструкции   </td><td class="tcam" id="ahelp">  <a>http://192.168.4.1/help</a> </td></tr> 
+        <tr><td class="tnet" id="soft_ap_ssid"> DachaSad     </td><td class="tcam" id="hsoftAPIP"> http://192.168.4.1   </td></tr> 
+        <tr><td class="tnet" id="hssid">        OPPO A9 2020 </td><td class="tcam" id="hlocalIP">  http://192.168.0.104 </td></tr> 
+        <tr>
+          <td class="tnet" id="hhelp">        Помощь       </td>
+          <!--
+          <td class="tcam" id="ahelp"><a href="http://192.168.1.103/help">http://192.168.1.103/help</a></td>
+          -->
+          <td class="tcam"><a href="http://192.168.1.103/helpi" id="ahelp">http://192.168.1.103/helpi</a></td>
+        </tr> 
       </tbody>
       </table>
       
@@ -597,11 +607,32 @@ th{font-size:.9rem;}
 document.addEventListener('DOMContentLoaded', function (event) 
 {
   // Определяем базовый адрес для страниц
-  var baseHost = document.location.origin
+  var baseHost = document.location.origin;
+  //var baseHost = 'http://192.168.1.103';
   var streamUrl = baseHost + ':81'
   var myLocal = document.location;
   console.log("Главная страница сервера: "+myLocal.href);
   console.log("baseHost:                 "+baseHost);
+  
+  //var ah = document.getElementById('ahelp');
+  //document.getElementById("yandex").href="https://google.com";
+  //document.getElementById("yandex2").href="https://google.com";
+  //document.getElementById("yandex2").innerHTML ="GOOGLE";
+  
+  
+  
+  // [Как заменить ссылку с помощью javascript](https://dwweb.ru/page/js/013_javascript_zamenit_ssyilku.html)
+  //document.getElementById("ahelp").href="http://192.168.1.103/help";
+  //document.getElementById("ahelp").innerHTML ="http://192.168.1.103/help";
+  
+  let refh=baseHost+"/help";
+  document.getElementById("ahelp").href=refh;
+  document.getElementById("ahelp").innerHTML=refh;
+  
+  
+  //ah.textContent = "Hello World";
+  //ah.textContent = "<a href=\""+baseHost+"/help\">"+baseHost+"/help</a>";
+  //<td class="tcam" id="ahelp"><a href="http://192.168.1.103/help">http://192.168.1.103/help</a></td></tr> 
 
   // ---
   // Оттрасстировать запрос на сервер
@@ -974,16 +1005,15 @@ document.addEventListener('DOMContentLoaded', function (event)
     }
     canvas.parentNode.removeChild(canvas);
   }
+  // ---
+  // Перезагрузить контроллер по клику
+  // ---
   reloadButton.onclick = () => 
   {
     let eload = confirm('Перезагрузить контроллер?'); 
     if (eload)
     {
-      //
-      console.log(`315 ${baseHost}/reload`);
       fetch(`${baseHost}/reload`) 
-      //.then(response => response.json()) 
-      //.then(data => console.log('Данные:', data)) 
       .then(response => response.text()) 
       //.then(text => console.log('315 Текст:',text)) 
       .then(function (text) 
@@ -995,23 +1025,6 @@ document.addEventListener('DOMContentLoaded', function (event)
         winreload.style['display'] = 'block';
       })
       .catch(error => console.error('315 Ошибка:', error))
-      
-      /*
-      .then(function (response) 
-      {
-        console.log("Перезагрузка: ",response.json());
-        const viewContent = document.getElementById('content');
-        viewContent.style['display'] = 'none';
-        const winreload = document.getElementById('winreload');
-        winreload.style['display'] = 'block';
-        return response.json();
-      })
-      */
-      /*
-      .then(function (state) 
-      {
-      })
-      */
     }
   }
   // Запускаем изменение всех элементов класса "default-action"

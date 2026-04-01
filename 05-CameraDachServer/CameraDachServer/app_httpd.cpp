@@ -687,10 +687,11 @@ static esp_err_t status_handler(httpd_req_t *req)
 // ****************************************************************************
 static esp_err_t reload_handler(httpd_req_t *req) 
 {
-  Serial.println("Через 15 секунд перезагрузка!"); 
+  const char reload_mess[] = "Через 5 секунд перезагрузка!";
+  Serial.println(reload_mess); 
   ESPrestart = true;
   httpd_resp_set_type(req, "text/html");
-  return httpd_resp_send(req,"Через 15 секунд перезагрузка!", HTTPD_RESP_USE_STRLEN);
+  return httpd_resp_send(req,reload_mess, HTTPD_RESP_USE_STRLEN);
 }
 // ***xclk***=3, обработчика HTTP-запроса по изменению частоты
 // входного тактового сигнала
