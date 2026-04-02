@@ -1,11 +1,13 @@
 /** Arduino, ESP32, C/C++ **************************** CameraDachServer.ino ***
  * 
- * v4.0.11, 31.03.2026                                Автор:      Труфанов В.Е.
+ * v4.0.12, 02.04.2026                                Автор:      Труфанов В.Е.
  * Copyright © 2026 tve                               Дата создания: 26.02.2026
  * 
  * Preferences:       https://espressif.github.io/arduino-esp32/package_esp32_dev_index.json
  * Espressif Systems: Esp32 от Espressif Systems версии 3.3.5 [3.0.7, 2.0.2] 
- * Payment:           "Al Thinker ESP32-CAM"
+ * Payment:           "Al Thinker ESP32-CAM" на Arduino IDE 2.3.8
+ * Partition Scheme:  Regular 4MB with spiffs (1.2MB APP/1.5MB SPIFFS) - OknoNaDorogu [3]
+ * Partition Scheme:  Minimal SPIFFS (1.9MB APP with OTA/128KB SPIFFS) - DachaSad     [1]
  * CPU Frequency:     "240MHz (WiFi/BT)"
  * Flash Frequency:   "80MHz"
  * Flash Mode:        "QIO"

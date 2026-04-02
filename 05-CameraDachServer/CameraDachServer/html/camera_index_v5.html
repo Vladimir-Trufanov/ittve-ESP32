@@ -1,6 +1,6 @@
 <!-- 
 Основная страница сервера, управляющая работой камеры ESP32-CAM
-v2.0.2 01.04.2026 
+v2.0.3 02.04.2026 
 -->
 <!doctype html>
 <html lang="ru">
@@ -369,7 +369,7 @@ th{font-size:.9rem;}
   </div>
   
   <div id=winreload>
-     <br><br>Контроллер перезагружается!!!<br><br>
+     <br><br>Контроллер перезагружается !!!<br><br>
      Подождите немного, а затем<br>
      для продолжения просмотра видеопотока<br>
      подключитесь заново к локальной сети или<br>
@@ -398,11 +398,8 @@ th{font-size:.9rem;}
         <tr><td class="tnet" id="soft_ap_ssid"> DachaSad     </td><td class="tcam" id="hsoftAPIP"> http://192.168.4.1   </td></tr> 
         <tr><td class="tnet" id="hssid">        OPPO A9 2020 </td><td class="tcam" id="hlocalIP">  http://192.168.0.104 </td></tr> 
         <tr>
-          <td class="tnet" id="hhelp">        Помощь       </td>
-          <!--
-          <td class="tcam" id="ahelp"><a href="http://192.168.1.103/help">http://192.168.1.103/help</a></td>
-          -->
-          <td class="tcam"><a href="http://192.168.1.103/helpi" id="ahelp">http://192.168.1.103/helpi</a></td>
+          <td class="tnet" id="hhelp"> Помощь </td>
+          <td class="tcam"><a href="http://192.168.1.103/help" id="ahelp">http://192.168.1.103/help</a></td>
         </tr> 
       </tbody>
       </table>
@@ -606,36 +603,20 @@ th{font-size:.9rem;}
 <script>
 document.addEventListener('DOMContentLoaded', function (event) 
 {
-  // Определяем базовый адрес для страниц
+  // Определяем базовый адрес для страниц 'http://192.168.1.103'
   var baseHost = document.location.origin;
-  //var baseHost = 'http://192.168.1.103';
   var streamUrl = baseHost + ':81'
   var myLocal = document.location;
   console.log("Главная страница сервера: "+myLocal.href);
   console.log("baseHost:                 "+baseHost);
   
-  //var ah = document.getElementById('ahelp');
-  //document.getElementById("yandex").href="https://google.com";
-  //document.getElementById("yandex2").href="https://google.com";
-  //document.getElementById("yandex2").innerHTML ="GOOGLE";
-  
-  
-  
   // [Как заменить ссылку с помощью javascript](https://dwweb.ru/page/js/013_javascript_zamenit_ssyilku.html)
-  //document.getElementById("ahelp").href="http://192.168.1.103/help";
-  //document.getElementById("ahelp").innerHTML ="http://192.168.1.103/help";
-  
+  // Готовим вызов помощи
   let refh=baseHost+"/help";
   document.getElementById("ahelp").href=refh;
   document.getElementById("ahelp").innerHTML=refh;
-  
-  
-  //ah.textContent = "Hello World";
-  //ah.textContent = "<a href=\""+baseHost+"/help\">"+baseHost+"/help</a>";
-  //<td class="tcam" id="ahelp"><a href="http://192.168.1.103/help">http://192.168.1.103/help</a></td></tr> 
-
   // ---
-  // Оттрасстировать запрос на сервер
+  // Оттрассировать запрос на сервер
   // ---
   function ut(iurl,istatus,itext)
   {
@@ -684,7 +665,6 @@ document.addEventListener('DOMContentLoaded', function (event)
       ut(url,-1,err);
     });
   }
-
   function setReg(reg, offset, mask, value, cb)
   {
     //console.log('Set Reg', '0x'+reg.toString(16), offset, '0x'+mask.toString(16), '0x'+value.toString(16), '('+value+')');
@@ -692,7 +672,6 @@ document.addEventListener('DOMContentLoaded', function (event)
     mask = mask << offset;
     fetchUrl(`${baseHost}/reg?reg=${reg}&mask=${mask}&val=${value}`, cb);
   }
-
   function getReg(reg, offset, mask, cb){
     mask = mask << offset;
     fetchUrl(`${baseHost}/greg?reg=${reg}&mask=${mask}`, function(code, txt){
@@ -731,7 +710,6 @@ document.addEventListener('DOMContentLoaded', function (event)
     });
   }
   */
-
   const setRegValue = (el) => 
   {
     let reg = el.attributes.reg?parseInt(el.attributes.reg.nodeValue):0;
@@ -759,7 +737,6 @@ document.addEventListener('DOMContentLoaded', function (event)
       }
     });
   }
-
   const updateRegValue = (el, value, updateRemote) => {
     let initialValue;
     let offset = el.attributes.offset?parseInt(el.attributes.offset.nodeValue):0;
@@ -774,7 +751,6 @@ document.addEventListener('DOMContentLoaded', function (event)
       el.value = value
     }
   }
-
   const printReg = (el) => {
     let reg = el.attributes.reg?parseInt(el.attributes.reg.nodeValue):0;
     let offset = el.attributes.offset?parseInt(el.attributes.offset.nodeValue):0;
@@ -794,7 +770,6 @@ document.addEventListener('DOMContentLoaded', function (event)
     value = (value & mask) << offset;
     return '0x'+reg.toString(16)+', 0x'+value.toString(16);
   }
-
   const hide = el => {
     el.classList.add('hidden')
   }
@@ -802,12 +777,10 @@ document.addEventListener('DOMContentLoaded', function (event)
   {
     el.classList.remove('hidden');
   }
-
   const disable = el => {
     el.classList.add('disabled')
     el.disabled = true
   }
-
   const enable = el => {
     el.classList.remove('disabled')
     el.disabled = false
@@ -944,27 +917,23 @@ document.addEventListener('DOMContentLoaded', function (event)
     window.stop();
     streamButton.innerHTML = 'Включить поток'
   }
-
   const startStream = () => 
   {
     view.src = `${streamUrl}/stream`
     show(viewContainer)
     streamButton.innerHTML = 'Остановить поток'
   }
-
-  // Attach actions to buttons
+  // Прикрепляем действия к кнопкам
   stillButton.onclick = () => {
     stopStream()
     view.src = `${baseHost}/capture?_cb=${Date.now()}`
     show(viewContainer)
   }
-
   closeButton.onclick = () => 
   {
     stopStream()
     hide(viewContainer)
   }
-
   streamButton.onclick = () => 
   {
     const streamEnabled = streamButton.innerHTML === 'Остановить поток'
