@@ -53,9 +53,10 @@ CameraDachServer
 2=ctrl_WiFi.h
 3=html\camera_index_v5.html
 4=camera_index.h
+5=..\..\04-Все от techtutorialsx\Обновление прошивки из файловой системы SPIFFS\HelloWorld\HelloWorld.ino
 [Selected Project Files]
 Main=
-Selected=camera_index.h
+Selected=..\..\04-Все от techtutorialsx\Обновление прошивки из файловой системы SPIFFS\HelloWorld\HelloWorld.ino
 [app_httpd.cpp]
 TopLine=670
 Caret=41,694
@@ -71,3 +72,6 @@ Caret=1,1043
 [camera_index.h]
 TopLine=147
 Caret=39,162
+[..\..\04-Все от techtutorialsx\Обновление прошивки из файловой системы SPIFFS\HelloWorld\HelloWorld.ino]
+TopLine=1
+Caret=4,1

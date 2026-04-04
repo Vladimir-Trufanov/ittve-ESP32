@@ -13,6 +13,15 @@
  * Flash Mode:        "QIO"
 **/
 
+// Скетч использует 1109231 байт (35%) памяти устройства. Всего доступно 3145728 байт.
+// Глобальные переменные используют 71144 байт (21%) динамической памяти, оставляя 256536 байт для локальных переменных. Максимум: 327680 байт.
+// "C:\Users\Евгеньевич\AppData\Local\Arduino15\packages\esp32\tools\esptool_py\5.1.0/esptool.exe" --chip esp32 --port "COM14" --baud 460800  --before default-reset --after hard-reset write-flash  -z --flash-mode keep --flash-freq keep --flash-size keep 0x1000 "C:\Users\Евгеньевич\AppData\Local\arduino\sketches\836C2E028DAFE37FCF8097C968CA5C1C/CameraDachServer.ino.bootloader.bin" 0x8000 "C:\Users\Евгеньевич\AppData\Local\arduino\sketches\836C2E028DAFE37FCF8097C968CA5C1C/CameraDachServer.ino.partitions.bin" 0xe000 "C:\Users\Евгеньевич\AppData\Local\Arduino15\packages\esp32\hardware\esp32\3.3.5/tools/partitions/boot_app0.bin" 0x10000 "C:\Users\Евгеньевич\AppData\Local\arduino\sketches\836C2E028DAFE37FCF8097C968CA5C1C/CameraDachServer.ino.bin" 
+
+// 0x1000   CameraDachServer.ino.bootloader.bin
+// 0x8000   CameraDachServer.ino.partitions.bin 
+// 0xe000   boot_app0.bin
+// 0x10000  CameraDachServer.ino.bin 
+
 // Подключаем библиотеки для подключения камеры к WiFi
 #include <WiFi.h>
 #include <WiFiMulti.h>
