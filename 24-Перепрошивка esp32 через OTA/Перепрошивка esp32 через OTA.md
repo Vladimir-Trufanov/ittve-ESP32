@@ -70,6 +70,11 @@ ElegantOTA разработан для того, чтобы сделать пр�
 
 2026-03-07 Приостановил изучение!
 
+### [5. Secure ESP32 OTA through HTTPS](https://github.com/PBearson/Get-Started-With-ESP32-OTA/tree/main)
+
+Еще не пробовал!!!
+
+
 ---
 
 ### Библиография
