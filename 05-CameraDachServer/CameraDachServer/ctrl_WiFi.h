@@ -48,11 +48,10 @@ void initSNTP()
    // сервер SNTP (есть также ESP_SNTP_OPMODE_LISTENONLY)
    esp_sntp_setoperatingmode(ESP_SNTP_OPMODE_POLL);
    // Указываем имя/адрес сервера. При желании можно указать несколько серверов.
-   // Например:
-   // "ntp.msk-ix.ru"
-   //           esp_sntp_setservername(0, «pool.ntp.org»);
-   //           esp_sntp_setservername(1, «de.pool.ntp.org»);
-   //           esp_sntp_setservername(2, «time.nist.gov»);
+   // Например: "ntp.msk-ix.ru"
+   //   esp_sntp_setservername(0, "pool.ntp.org");
+   //   esp_sntp_setservername(1, "de.pool.ntp.org");
+   //   esp_sntp_setservername(2, "time.nist.gov");
    esp_sntp_setservername(0, "ntp.msk-ix.ru");
    // Запускаем службу SNTP с указанными выше параметрами
    esp_sntp_init();
