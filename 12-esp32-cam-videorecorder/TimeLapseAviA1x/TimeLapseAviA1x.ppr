@@ -1,0 +1,42 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.CompileOnBackground=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+Compilator.LogEncoding=0
+DefaultDir=C:\ittve-ESP32\12-esp32-cam-videorecorder\TimeLapseAviA1x
+DefaultCP=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+HTServer=localhost
+Extensions=*.*
+[Project tree]
+TimeLapseAviA1x
+	+TimeLapseAviA1x
+		CRC32.cpp
+		CRC32.h
+		ESPxWebFlMgr.cpp
+		ESPxWebFlMgr.h
+		ESPxWebFlMgrWp.h
+		ESPxWebFlMgrWpF.h
+		settings.h
+		TimeLapseAviA1x.ino
+		UniversalTelegramBot.cpp
+		UniversalTelegramBot.h
+[Open project files]
+0=CRC32.cpp
+1=TimeLapseAviA1x.ino
+[Selected Project Files]
+Main=
+Selected=TimeLapseAviA1x.ino
+[CRC32.cpp]
+TopLine=1
+Caret=1,1
+[TimeLapseAviA1x.ino]
+TopLine=1675
+Caret=1,1

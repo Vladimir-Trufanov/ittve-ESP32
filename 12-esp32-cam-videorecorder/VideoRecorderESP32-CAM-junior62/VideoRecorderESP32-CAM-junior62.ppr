@@ -6,14 +6,13 @@ Compilator.ProgSaveAll=0
 Compilator.ProgRunSelection=0
 Compilator.LogType=0
 Compilator.LogEncoding=0
-DefaultDir=C:\ittve-ESP32-CAM\12-esp32-cam-videorecorder\VideoRecorderESP32-CAM-junior62
+DefaultDir=C:\ittve-ESP32\12-esp32-cam-videorecorder\VideoRecorderESP32-CAM-junior62
 DefaultCP=0
 LogtoEnd=1
 DontOpen=0
 AbsolutePath=0
 FileFormat=0
 ProjectFilesOnly=0
-HTServer=localhost
 Extensions=*.*
 [Project tree]
 VideoRecorderESP32-CAM-junior62
@@ -26,12 +25,11 @@ VideoRecorderESP32-CAM-junior62
 		ESPxWebFlMgrWp.h
 		ESPxWebFlMgrWpF.h
 		VideoRecorderESP32-CAM-junior62.ino
-		VideoRecorderESP32-CAM-junior62.ppr
 [Open project files]
 0=VideoRecorderESP32-CAM-junior62.ino
 [Selected Project Files]
 Main=
 Selected=VideoRecorderESP32-CAM-junior62.ino
 [VideoRecorderESP32-CAM-junior62.ino]
-TopLine=3649
-Caret=1,3553
+TopLine=3911
+Caret=10,3927
