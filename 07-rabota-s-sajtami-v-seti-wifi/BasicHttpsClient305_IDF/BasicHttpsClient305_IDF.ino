@@ -1,8 +1,7 @@
 /**
-   BasicHTTPSClient.ino
+   BasicHTTPSClient_IDF.ino
 
-    Created on: 14.10.2018
-
+   Created on: 14.10.2018 - 06.11.2026
 */
 
 #include <Arduino.h>
@@ -68,11 +67,13 @@ WiFiMulti WiFiMulti;
 void setup() {
 
   Serial.begin(115200);
-  // Serial.setDebugOutput(true);
-
+  Serial.setDebugOutput(true);
+  delay(10000);
   Serial.println();
   Serial.println();
   Serial.println();
+  Serial.println("Ждем 5 секунд для подключения!");
+  delay(10000);
 
   WiFi.mode(WIFI_STA);
   WiFiMulti.addAP("OPPO A9 2020", "b277a4ee84e8");
@@ -111,7 +112,9 @@ void loop() {
           // file found at server
           if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
             String payload = https.getString();
+            Serial.println("--------- Начало страницы --------------------------------------------");
             Serial.println(payload);
+            Serial.println("--------- Завершение страницы ----------------------------------------");
           }
         } else {
           Serial.printf("[HTTPS] GET... failed, error: %s\n", https.errorToString(httpCode).c_str());

@@ -60,6 +60,7 @@ void loop()
     // configure traged server and url
     // http.begin("http://probatv.ru/server.log"); // HTTP
     // Загружаем тестовую страницу сайта
+    //http.begin("http://kwinflat.ru/Esp32/"); 
     http.begin("http://kwinflat.ru/Esp32/"); 
     USE_SERIAL.print("[HTTP] GET...\n");
     // start connection and send HTTP header
