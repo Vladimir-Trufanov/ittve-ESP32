@@ -37,9 +37,10 @@ CameraWebServer202
 0=html\camera_index_v4.html
 1=app_httpd.cpp
 2=CameraWebServer202.ino
+3=camera_pins.h
 [Selected Project Files]
 Main=
-Selected=CameraWebServer202.ino
+Selected=camera_pins.h
 [html\camera_index_v4.html]
 TopLine=747
 Caret=26,760
@@ -47,5 +48,8 @@ Caret=26,760
 TopLine=1089
 Caret=18,1089
 [CameraWebServer202.ino]
-TopLine=20
-Caret=1,1
+TopLine=53
+Caret=34,71
+[camera_pins.h]
+TopLine=115
+Caret=9,118
