@@ -50,32 +50,16 @@ CameraDachServer
 [Open project files]
 0=app_httpd.cpp
 1=CameraDachServer.ino
-2=ctrl_WiFi.h
-3=html\camera_index_v5.html
-4=camera_index.h
-5=..\..\04-Все от techtutorialsx\Обновление прошивки из файловой системы SPIFFS\HelloWorld\HelloWorld.ino
-6=board_config.h
+2=jpr.h
 [Selected Project Files]
 Main=
-Selected=CameraDachServer.ino
+Selected=jpr.h
 [app_httpd.cpp]
-TopLine=670
-Caret=41,694
+TopLine=39
+Caret=1,68
 [CameraDachServer.ino]
-TopLine=9
-Caret=19,41
-[ctrl_WiFi.h]
-TopLine=23
-Caret=1,1
-[html\camera_index_v5.html]
-TopLine=1004
-Caret=1,1043
-[camera_index.h]
-TopLine=162
-Caret=39,162
-[..\..\04-Все от techtutorialsx\Обновление прошивки из файловой системы SPIFFS\HelloWorld\HelloWorld.ino]
-TopLine=1
-Caret=4,1
-[board_config.h]
-TopLine=5
-Caret=9,17
+TopLine=183
+Caret=1,212
+[jpr.h]
+TopLine=30
+Caret=153,41
